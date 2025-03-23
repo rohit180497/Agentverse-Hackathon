@@ -1,0 +1,10 @@
+{
+    "TestAgent": {
+        "identity_key": "2bb7281edd0e1bd3a656b6f57116641917b6b11c77d6b78dad082995ca21c21e",
+        "wallet_key": "wxy7FC2oCX+1txKDTQGpemQneT9DLkfJ98iZTDn3yFg="
+    },
+    "RouteAgent": {
+        "identity_key": "7f231573c73df1477db3d267297a24458ed8fc78d94685242b45550c6f835856",
+        "wallet_key": "CK1TjufC0SBfT/7Hv/Xi5/Jl3JOM0BTCLfXkcRpVFio="
+    }
+}
