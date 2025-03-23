@@ -26,7 +26,7 @@ async def send_request(ctx: Context):
     await ctx.send(ROUTE_AGENT_ADDRESS, RouteRequest(
         source="Boston, MA",
         destination="New York, NY",
-        api_key="AIzaSyDMNlhBjV128fuU4hVJlGJUP1BRjz3JCsI"
+        api_key="YourAPIKey"
     ))
     ctx.logger.info("📤 Sent RouteRequest to RouteAgent")
 
