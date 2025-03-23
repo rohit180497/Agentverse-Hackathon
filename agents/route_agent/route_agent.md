@@ -1,49 +1,101 @@
-# RouteAgent
-**Domain:** travel
+# Google API Route Agent
 
-This agent calculates driving route details between a given source and destination using the Google Maps API. It returns distance, estimated travel time, fuel consumption, toll information, route labels (like fuel efficiency), and any warnings.
+![tag : innovation-lab](https://img.shields.io/badge/innovation--lab-3D8BD3) ![tag : travel](https://img.shields.io/badge/travel-orange) ![tag : google-maps](https://img.shields.io/badge/google--maps-blue) ![tag : route-planning](https://img.shields.io/badge/route--planning-green) ![tag : mobility](https://img.shields.io/badge/mobility-lightgrey) ![tag : transportation](https://img.shields.io/badge/transportation-yellow) ![tag : location-services](https://img.shields.io/badge/location--services-red)
 
-It leverages both the Google Geocoding API and Routes API to generate enriched travel insights.
+**Domain:** Travel / Mobility / Infrastructure  
+**Agent Type:** Specialized AI Agent for Route Planning  
+**Status:** Public and Live on Agentverse
 
 ---
 
-### 📅 Example Input
+## Overview
+`RouteAgent` is a smart AI agent that provides travel route insights between two geographic locations using the **Google Maps Routes API**.
+
+Given a source and destination location (as names), it returns:
+- Total driving distance (in meters)
+- Estimated travel time
+- Estimated fuel consumption (if available)
+- Toll information (if applicable)
+- Travel warnings
+- Route labels
+- A clean summary string
+
+---
+
+## Input Format
+Send a `RouteRequest` model:
+```python
+class RouteRequest(BaseModel):
+    source: str         # Name or address of the starting point
+    destination: str    # Name or address of the destination
+    api_key: str        # Your own Google Maps API Key
+```
+
+### Example Input:
 ```python
 RouteRequest(
-    source="Roxbury, Boston, MA",
-    destination="New York, NY"
-)
-```
-
-### 📊 Example Output
-```python
-RouteResponse(
-    source='Roxbury, Boston, MA',
-    destination='New York, NY',
-    distance_meters=344017,
-    duration='12605s',
-    fuel_estimate_liters=23.7,
-    toll_info=[{'currencyCode': 'USD', 'units': '15'}],
-    route_labels=['DEFAULT_ROUTE', 'FUEL_EFFICIENT'],
-    warnings=['This route has tolls'],
-    summary='Route from Roxbury, Boston, MA to New York, NY is 344.02 km and takes approx 210 minutes.'
+    source="Boston, MA",
+    destination="New York, NY",
+    api_key="<YOUR_GOOGLE_API_KEY>"
 )
 ```
 
 ---
 
-### 🔄 Usage Example
-Copy and paste the following code into a new blank agent to interact with this RouteAgent:
-
+## Output Format
+Agent replies with a `RouteResponse` model:
 ```python
-from uagents import Agent, Context, Model
-from pydantic import BaseModel
-
-class RouteRequest(Model):
+class RouteResponse(BaseModel):
     source: str
     destination: str
+    distance_meters: int
+    duration: str
+    fuel_estimate_liters: float | None = None
+    toll_info: list | None = None
+    route_labels: list | None = None
+    warnings: list | None = None
+    summary: str
+```
 
-class RouteResponse(Model):
+### Example Output
+```json
+{
+  "source": "Boston, MA",
+  "destination": "New York, NY",
+  "distance_meters": 344000,
+  "duration": "12345s",
+  "fuel_estimate_liters": 21.8,
+  "toll_info": [],
+  "route_labels": ["DEFAULT_ROUTE"],
+  "warnings": ["This route has tolls.", "This route includes a highway."],
+  "summary": "Route from Boston, MA to New York, NY is 214.45 miles and takes approx 204.8 minutes."
+}
+```
+
+---
+
+## Usage Instructions
+
+### 1. Install Dependencies
+```bash
+pip install uagents requests pydantic python-dotenv
+```
+
+### 2. Register and Start RouteAgent (optional)
+This agent is already deployed. To use directly, proceed to step 3.
+
+### 3. Send a Request From Another Agent
+Use the following minimal agent to test:
+```python
+from uagents import Agent, Context
+from pydantic import BaseModel
+
+class RouteRequest(BaseModel):
+    source: str
+    destination: str
+    api_key: str
+
+class RouteResponse(BaseModel):
     source: str
     destination: str
     distance_meters: int
@@ -54,59 +106,47 @@ class RouteResponse(Model):
     warnings: list | None = None
     summary: str
 
-agent = Agent()
+ROUTE_AGENT_ADDRESS = "agent1qfetzztsmf373m7qa4x6l5mjveykecm87cu9m7myaxd7ukp0rwrjkkax9wt"
 
-ROUTE_AGENT_ADDRESS = "{{ .Agent.Address }}"  # Replace with actual RouteAgent address
+agent = Agent(name="TestAgent")
 
 @agent.on_event("startup")
-async def send_message(ctx: Context):
+async def trigger(ctx: Context):
     await ctx.send(ROUTE_AGENT_ADDRESS, RouteRequest(
-        source="Roxbury, Boston, MA",
-        destination="New York, NY"
+        source="Boston, MA",
+        destination="New York, NY",
+        api_key="<YOUR_GOOGLE_API_KEY>"
     ))
 
 @agent.on_message(model=RouteResponse)
-async def handle_response(ctx: Context, sender: str, msg: RouteResponse):
-    ctx.logger.info(f"Route summary: {msg.summary}")
-    ctx.logger.info(f"Fuel: {msg.fuel_estimate_liters} liters | Toll: {msg.toll_info}")
-    ctx.logger.info(f"Labels: {msg.route_labels} | Warnings: {msg.warnings}")
+async def handle(ctx: Context, sender: str, msg: RouteResponse):
+    ctx.logger.info(msg.model_dump_json(indent=2))
 
-if __name__ == "__main__":
-    agent.run()
+agent.run()
 ```
 
 ---
 
-### 💼 Agent Deployment
-
-To deploy this agent:
-1. Install dependencies:
-```bash
-pip install uagents requests python-dotenv
-```
-
-2. Create a `.env` file with:
-```env
-GOOGLE_MAPS_API_KEY=your_google_api_key_here
-```
-
-3. Set your agent as public and register it on [Agentverse](https://agentverse.ai)
+## Notes
+- Make sure you provide your own **Google Maps API key**.
+- Distance is returned in **meters**; converted to **miles** in summary.
+- Fuel info and tolls are only available in some countries/regions.
+- Perfect for chaining with itinerary agents, EV planning agents, cost estimators, etc.
 
 ---
 
-### ⚡ Notes
-- Requires both **Google Geocoding API** and **Google Routes API** to be enabled in your GCP project.
-- To restrict your API key securely, refer to the [Google Maps Platform docs](https://developers.google.com/maps/gmp-get-started).
+## Source Code
+[GitHub Project](https://github.com/rohit180497/Agentverse-Hackathon/tree/main/agents/route_agent)
+
+## Credits
+Developed for the **Fetch.ai Global AI Agents League Hackathon**  
+Built by: [Rohit Kosamkar](https://github.com/rohit180497)
 
 ---
 
-### 📍 API Pricing
-- Google Maps offers $200/month free usage.
-- Charges apply for excessive geocoding and routing calls.
-- Refer to: https://cloud.google.com/maps-platform/pricing
+## Contribute
+Have suggestions, feature ideas, or improvements? Feel free to fork the project, submit pull requests, or open issues.  
+We welcome all contributions and feedback to make this agent even better.
 
----
-
-### 🕹️ Tags
-![tag : innovation-lab](https://img.shields.io/badge/innovation--lab-3D8BD3)
+Let's build the agentverse together!
 
