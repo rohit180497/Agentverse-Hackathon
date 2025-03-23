@@ -2,10 +2,13 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
+*.json
+agents/*.json
 # C extensions
 *.so
 .env
+agents/weather_agent/private_keys.json
+
 # Distribution / packaging
 .Python
 build/
@@ -25,6 +28,7 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+*.json
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
