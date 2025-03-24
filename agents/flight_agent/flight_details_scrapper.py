@@ -8,163 +8,109 @@ from selenium.webdriver.chrome.options import Options
 import time
 from datetime import datetime
 from selenium.common.exceptions import TimeoutException
+from prettytable import PrettyTable
 import pandas as pd
-from pydantic import BaseModel
-from uagents import Agent, Context, Protocol
 
 
-
-# ---------- Input and Output Models ----------
-class FlightRequest(BaseModel):
-    from_city: str
-    to_city: str
-    departure_date: str  # Format: YYYY-MM-DD
-    return_date: str     # Format: YYYY-MM-DD
-
-class FlightLeg(BaseModel):
-    from_airport: str
-    to_airport: str
-    airline: str
-    depart: str
-    arrive: str
-    duration: str
-    stops: str
-    stop_detail: str
-
-class FlightResult(BaseModel):
-    price: str
-    legs: list[FlightLeg]
-
-class FlightResponse(BaseModel):
-    flights: list[FlightResult]
-
-# ---------- Agent Initialization ----------
-flight_agent = Agent(name="FlightAgent", seed=None, public=True)
-flight_protocol = Protocol("FlightSearchProtocol")
-
-
-
-
-
-
+# ----------- USER INPUT SECTION -----------
+FROM_CITY = "Las Vegas"
+TO_CITY = "New York"
+DEPARTURE_DATE = "2025-4-10"
+RETURN_DATE = "2025-4-17"
 
 # ----------- SELENIUM AUTOMATION -----------
-@flight_protocol.on_message(model=FlightRequest)
-async def run_flight_search(ctx: Context, sender: str, message: FlightRequest):
+def run_flight_search():
+    # Step 1: Configure Chrome options
     options = Options()
-    options.add_argument("--headless=new")
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--start-maximized")
 
     try:
+        # Step 2: Launch Chrome browser and open Kayak
         driver = webdriver.Chrome(options=options)
         driver.get("https://www.kayak.com/flights")
+
+        # Optional: Wait for a few seconds to view the page before exiting
         time.sleep(2)
 
+        # Step 3: Wait and close the "I understand" popup if present
         try:
-            WebDriverWait(driver, 5).until(
-                EC.element_to_be_clickable((By.XPATH, "//button[.//div[text()='I understand']]"))
-            ).click()
-        except Exception:
-            pass
+            wait = WebDriverWait(driver, 5)
+            understand_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[.//div[text()='I understand']]")))
+            understand_button.click()
+            print("✅ Clicked 'I understand' button")
+        except Exception as e:
+            print("⚠️ 'I understand' button not found or already handled")
 
-        clear_input_field(driver)
-        from_city(driver, message.from_city)
-        to_city(driver, message.to_city)
-        select_departure_date(driver, message.departure_date)
-        select_return_date(driver, message.return_date)
+        # --------- CLEAR ALL EXISTING CITIES FIRST ---------
+        try:
+            # There could be multiple close buttons for both From and To
+            close_buttons = WebDriverWait(driver, 5).until(
+                EC.presence_of_all_elements_located((By.XPATH, "//div[@class='c_neb-item-close']"))
+            )
+            for btn in close_buttons:
+                try:
+                    btn.click()
+                    print("🧹 Cleared one city chip")
+                    time.sleep(0.5)
+                except:
+                    pass
+        except:
+            print("ℹ️ No pre-selected city chips to clear")
+        
+        # -------- SET "FROM" CITY --------
+        try:
+            from_input = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable((By.XPATH, "//input[@aria-label='Flight origin input']"))
+            )
+            from_input.click()
+            from_input.clear()
+            from_input.send_keys(FROM_CITY)
+            print(f"✏️ Typed '{FROM_CITY}' in From input")
+            time.sleep(2)  # Let dropdown load
+
+            from_option_xpath = "//ul[contains(@id,'flight-origin-smarty-input-list')]//li[@role='option'][1]"
+            from_option = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable((By.XPATH, from_option_xpath))
+            )
+            from_option.click()
+            print("✅ Selected From city from dropdown")
+            time.sleep(2)  # Ensure selection is registered
+        except Exception as e:
+            print("❌ Error handling From city:", str(e)) 
+
+        # -------- SET "TO" CITY --------
+        try:
+            to_input = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable((By.XPATH, "//input[@aria-label='Flight destination input']"))
+            )
+            to_input.click()
+            to_input.clear()
+            to_input.send_keys(TO_CITY)
+            print(f"✏️ Typed '{TO_CITY}' in To input")
+            time.sleep(2)  # Let dropdown load
+
+            to_option_xpath = "//ul[contains(@id,'flight-destination-smarty-input-list')]//li[@role='option'][1]"
+            to_option = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable((By.XPATH, to_option_xpath))
+            )
+            to_option.click()
+            print("✅ Selected To city from dropdown")
+            time.sleep(2)  # Ensure selection is registered
+        except Exception as e:
+            print("❌ Error handling To city:", str(e))
+
+        
+        select_departure_date(driver, DEPARTURE_DATE)
+        select_return_date(driver, RETURN_DATE)
         click_search_button(driver)
-        time.sleep(2)
+        time.sleep(2)  # Give the tab time to load
+        for i, handle in enumerate(driver.window_handles):
+            print(f"🪟 Tab {i + 1}: {handle}")
         switch_to_latest_tab(driver)
-        flights = extract_flight_data(driver,message.departure_date)
-
-        # Convert to structured response
-        results = []
-        for flight in flights:
-            legs = [
-                FlightLeg(
-                    from_airport=leg["From"],
-                    to_airport=leg["To"],
-                    airline=leg["Airline"],
-                    depart=leg["Depart"],
-                    arrive=leg["Arrive"],
-                    duration=leg["Duration"],
-                    stops=leg["Stops"],
-                    stop_detail=leg["Stop Detail"]
-                ) for leg in flights if isinstance(leg, dict)
-            ]
-            results.append(FlightResult(price=flight["Price"], legs=legs))
-
-        response = FlightResponse(flights=results)
-        await ctx.send(sender, response)
-
-    except Exception as e:
-        ctx.logger.error(f"FlightAgent error: {e}")
-        await ctx.send(sender, {"error": str(e)})
+        extract_flight_data(driver)
 
     finally:
         driver.quit()
-
-def to_city(driver, TO_CITY):
-    # -------- SET "TO" CITY --------
-    try:
-        to_input = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//input[@aria-label='Flight destination input']"))
-        )
-        to_input.click()
-        to_input.clear()
-        to_input.send_keys(TO_CITY)
-        print(f"✏️ Typed '{TO_CITY}' in To input")
-        time.sleep(2)  # Let dropdown load
-
-        to_option_xpath = "//ul[contains(@id,'flight-destination-smarty-input-list')]//li[@role='option'][1]"
-        to_option = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, to_option_xpath))
-        )
-        to_option.click()
-        print("✅ Selected To city from dropdown")
-        time.sleep(2)  # Ensure selection is registered
-    except Exception as e:
-        print("❌ Error handling To city:", str(e))
-
-def from_city(driver, FROM_CITY):
-    # -------- SET "FROM" CITY --------
-    try:
-        from_input = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//input[@aria-label='Flight origin input']"))
-        )
-        from_input.click()
-        from_input.clear()
-        from_input.send_keys(FROM_CITY)
-        print(f"✏️ Typed '{FROM_CITY}' in From input")
-        time.sleep(2)  # Let dropdown load
-
-        from_option_xpath = "//ul[contains(@id,'flight-origin-smarty-input-list')]//li[@role='option'][1]"
-        from_option = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, from_option_xpath))
-        )
-        from_option.click()
-        print("✅ Selected From city from dropdown")
-        time.sleep(2)  # Ensure selection is registered
-    except Exception as e:
-        print("❌ Error handling From city:", str(e)) 
-
-def clear_input_field(driver):
-    # --------- CLEAR ALL EXISTING CITIES FIRST ---------
-    try:
-        # There could be multiple close buttons for both From and To
-        close_buttons = WebDriverWait(driver, 5).until(
-            EC.presence_of_all_elements_located((By.XPATH, "//div[@class='c_neb-item-close']"))
-        )
-        for btn in close_buttons:
-            try:
-                btn.click()
-                print("🧹 Cleared one city chip")
-                time.sleep(0.5)
-            except:
-                pass
-    except:
-        print("ℹ️ No pre-selected city chips to clear")
 
 def select_departure_date(driver, departure_date_str):
     try:
@@ -238,7 +184,9 @@ def switch_to_latest_tab(driver):
     driver.switch_to.window(driver.window_handles[-1])
     print("🔀 Switched to latest tab.")
 
-def extract_flight_data(driver, DEPARTURE_DATE):
+
+def extract_flight_data(driver):
+    import pandas as pd
     print("🔍 Waiting for flight result cards to load...")
 
     wait = WebDriverWait(driver, 40)
@@ -321,7 +269,14 @@ def extract_flight_data(driver, DEPARTURE_DATE):
                 }
                 flight_rows.append(row)
 
-        return flights  # Optional: if you want to use it elsewhere
+        df_flights = pd.DataFrame(flight_rows)
+        print("\n📊 DataFrame Preview:")
+        print(df_flights.head())
+
+        # Optional: Save to CSV
+        df_flights.to_csv("flight_results.csv", index=False)
+
+        return df_flights  # Optional: if you want to use it elsewhere
 
     except TimeoutException:
         print("⏱️ Timeout! Couldn't find flight cards.")
@@ -329,13 +284,22 @@ def extract_flight_data(driver, DEPARTURE_DATE):
         driver.save_screenshot("flight_results_timeout.png")
         print("📸 Screenshot saved as 'flight_results_timeout.png'")
 
+def print_flight_table(flights):
+    print("\n📋 Flight Results:\n")
+    for i, flight in enumerate(flights, 1):
+        print(f"✈️  Option {i}: ${flight['price']}")
+        table = PrettyTable()
+        table.field_names = ["From", "To", "Airline", "Depart", "Arrive", "Duration", "Stops"]
 
-# Register protocol and startup event
-flight_agent.include(flight_protocol)
+        for leg in flight['legs']:
+            table.add_row([
+                leg['from'], leg['to'], leg['airline'],
+                leg['depart'], leg['arrive'], leg['duration'],
+                leg['stops']
+            ])
+        print(table)
+        print("-" * 80)
 
-@flight_agent.on_event("startup")
-async def on_start(ctx: Context):
-    ctx.logger.info("FlightAgent is live!")
 
 if __name__ == "__main__":
-    flight_agent.run()
+    run_flight_search()
