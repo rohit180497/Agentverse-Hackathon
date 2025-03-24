@@ -25,12 +25,11 @@ class ExploreResponse(BaseModel):
 test_agent = Agent(name="TestExploreSender")
 protocol = Protocol(name="ExploreProtocol")
 
-EXPLORE_AGENT_ADDRESS = "agent1q0vj2jq0xe05zdukwnesaqvey0sve99gahvfp452yrlemtng8axzvcf8hq0"  # Replace with actual address
-
+EXPLORE_AGENT_ADDRESS = "agent1q0vj2jq0xe05zdukwnesaqvey0sve99gahvfp452yrlemtng8axzvcf8hq0"  
 @protocol.on_message(model=ExploreResponse)
 async def handle_response(ctx: Context, sender: str, msg: ExploreResponse):
     # Convert Pydantic model to JSON
-    response_json = msg.model_dump()  # Or use msg.dict() if using older Pydantic
+    response_json = msg.model_dump()  
     ctx.logger.info("Received full ExploreResponse JSON:")
     ctx.logger.info(json.dumps(response_json, indent=2))
 
