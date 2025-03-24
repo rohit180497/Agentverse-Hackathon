@@ -11,7 +11,6 @@ from selenium.common.exceptions import TimeoutException
 from prettytable import PrettyTable
 import pandas as pd
 
-
 # ----------- USER INPUT SECTION -----------
 FROM_CITY = "Las Vegas"
 TO_CITY = "New York"
