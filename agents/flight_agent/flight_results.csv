@@ -1,0 +1,49 @@
+Option,From,To,Airline,Depart,Arrive,Duration,Stops,Stop Detail,Date,Price
+1,LAS,JFK,Delta,11:15 am,7:30 pm,5h 15m,nonstop,N/A,2025-4-10,$292
+1,JFK,LAS,Delta,9:15 pm,"12:17 am
++1",6h 02m,nonstop,N/A,2025-4-10,$292
+2,LAS,JFK,Frontier,9:34 pm,"5:30 am
++1",4h 56m,nonstop,N/A,2025-4-10,$196
+2,JFK,LAS,Frontier,6:59 am,9:51 am,5h 52m,nonstop,N/A,2025-4-10,$196
+3,LAS,EWR,Spirit Airlines,10:43 pm,"6:43 am
++1",5h 00m,nonstop,N/A,2025-4-10,$216
+3,JFK,LAS,Frontier,6:59 am,9:51 am,5h 52m,nonstop,N/A,2025-4-10,$216
+4,LAS,JFK,JetBlue,2:15 pm,10:29 pm,5h 14m,nonstop,N/A,2025-4-10,$272
+4,JFK,LAS,JetBlue,9:45 pm,"12:57 am
++1",6h 12m,nonstop,N/A,2025-4-10,$272
+5,LAS,JFK,JetBlue,7:50 am,3:56 pm,5h 06m,nonstop,N/A,2025-4-10,$272
+5,JFK,LAS,JetBlue,9:45 pm,"12:57 am
++1",6h 12m,nonstop,N/A,2025-4-10,$272
+6,LAS,JFK,JetBlue,10:35 am,6:35 pm,5h 00m,nonstop,N/A,2025-4-10,$272
+6,JFK,LAS,JetBlue,9:45 pm,"12:57 am
++1",6h 12m,nonstop,N/A,2025-4-10,$272
+7,LAS,JFK,Frontier,9:34 pm,"5:30 am
++1",4h 56m,nonstop,N/A,2025-4-10,$252
+7,EWR,LAS,Spirit Airlines,5:54 pm,8:31 pm,5h 37m,nonstop,N/A,2025-4-10,$252
+8,LAS,JFK,JetBlue,6:05 am,1:59 pm,4h 54m,nonstop,N/A,2025-4-10,$272
+8,JFK,LAS,JetBlue,9:45 pm,"12:57 am
++1",6h 12m,nonstop,N/A,2025-4-10,$272
+9,LAS,JFK,JetBlue,9:44 pm,"5:38 am
++1",4h 54m,nonstop,N/A,2025-4-10,$272
+9,JFK,LAS,JetBlue,9:45 pm,"12:57 am
++1",6h 12m,nonstop,N/A,2025-4-10,$272
+10,LAS,EWR,Spirit Airlines,10:43 pm,"6:43 am
++1",5h 00m,nonstop,N/A,2025-4-10,$261
+10,EWR,LAS,Spirit Airlines,5:54 pm,8:31 pm,5h 37m,nonstop,N/A,2025-4-10,$261
+11,LAS,JFK,Delta,11:15 am,7:30 pm,5h 15m,nonstop,N/A,2025-4-10,$292
+11,JFK,LAS,Delta,9:15 pm,"12:17 am
++1",6h 02m,nonstop,N/A,2025-4-10,$292
+12,LAS,LGA,Spirit Airlines,1:07 am,11:01 am,6h 54m,1 stop,"0h 55m layover, ,[object Object]",2025-4-10,$200
+12,JFK,LAS,Frontier,6:59 am,9:51 am,5h 52m,nonstop,N/A,2025-4-10,$200
+13,LAS,EWR,United Airlines,12:30 am,8:23 am,4h 53m,nonstop,N/A,2025-4-10,$337
+13,EWR,LAS,United Airlines,4:59 pm,7:48 pm,5h 49m,nonstop,N/A,2025-4-10,$337
+14,LAS,JFK,Delta,3:55 pm,"12:09 am
++1",5h 14m,nonstop,N/A,2025-4-10,$292
+14,JFK,LAS,Delta,9:15 pm,"12:17 am
++1",6h 02m,nonstop,N/A,2025-4-10,$292
+15,LAS,JFK,Frontier,9:34 pm,"5:30 am
++1",4h 56m,nonstop,N/A,2025-4-10,$220
+15,LGA,LAS,Spirit Airlines,11:56 am,4:32 pm,7h 36m,1 stop,"0h 39m layover, ,[object Object]",2025-4-10,$220
+16,LAS,EWR,United Airlines,11:36 pm,"7:30 am
++1",4h 54m,nonstop,N/A,2025-4-10,$337
+16,EWR,LAS,United Airlines,4:59 pm,7:48 pm,5h 49m,nonstop,N/A,2025-4-10,$337
