@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Aerial Route Map with Nearby Attractions</title>
+  <style>
+    #map {
+      height: 650px;
+      width: 100%;
+    }
+    .curved-line {
+      stroke-linecap: round;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <script>
+    function initMap() {
+      // Get source and destination from parameters or set defaults
+      const urlParams = new URLSearchParams(window.location.search);
+      const source = urlParams.get('source') || "Boston, MA";
+      const destination = urlParams.get('destination') || "San Fransisco, NY";
+      
+      // Initialize the map centered between source and destination
+      const map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 7,
+        center: { lat: 41.5, lng: -73.5 },
+        mapTypeId: google.maps.MapTypeId.TERRAIN
+      });
+      
+      const geocoder = new google.maps.Geocoder();
+      let sourceLatLng, destinationLatLng;
+      
+      // Geocode source
+      geocoder.geocode({ address: source }, (results, status) => {
+        if (status === "OK") {
+          sourceLatLng = results[0].geometry.location;
+          
+          // Add source marker
+          new google.maps.Marker({
+            position: sourceLatLng,
+            map: map,
+            title: "Source: " + source,
+            label: "S",
+            animation: google.maps.Animation.DROP
+          });
+          
+          // Geocode destination after source is found
+          geocoder.geocode({ address: destination }, (results, status) => {
+            if (status === "OK") {
+              destinationLatLng = results[0].geometry.location;
+              
+              // Add destination marker
+              new google.maps.Marker({
+                position: destinationLatLng,
+                map: map,
+                title: "Destination: " + destination,
+                label: "D",
+                animation: google.maps.Animation.DROP
+              });
+              
+              // Create bounds to fit both points
+              const bounds = new google.maps.LatLngBounds();
+              bounds.extend(sourceLatLng);
+              bounds.extend(destinationLatLng);
+              map.fitBounds(bounds);
+              
+              // Draw curved line between points
+              drawCurvedLine(sourceLatLng, destinationLatLng, map);
+              
+              // Find tourist attractions near destination
+              findNearbyAttractions(destinationLatLng, map);
+            }
+          });
+        }
+      });
+    }
+    
+    function drawCurvedLine(source, destination, map) {
+      // Calculate midpoint with an offset for curvature
+      const midPoint = google.maps.geometry.spherical.interpolate(source, destination, 0.5);
+      const heading = google.maps.geometry.spherical.computeHeading(source, destination);
+      const perpendicular = heading + 90;
+      
+      // Calculate distance between points
+      const distance = google.maps.geometry.spherical.computeDistanceBetween(source, destination);
+      const curvature = distance / 12; // Adjust curvature based on distance
+      
+      // Create curved midpoint
+      const curvedMidPoint = google.maps.geometry.spherical.computeOffset(
+        midPoint, 
+        curvature, 
+        perpendicular
+      );
+      
+      // Create path array with control points for smooth curve
+      const pathPoints = [];
+      for (let i = 0; i <= 100; i++) {
+        const t = i / 100;
+        
+        // Quadratic Bezier curve formula
+        const lat = Math.pow(1-t, 2) * source.lat() + 
+                   2 * (1-t) * t * curvedMidPoint.lat() + 
+                   Math.pow(t, 2) * destination.lat();
+        
+        const lng = Math.pow(1-t, 2) * source.lng() + 
+                   2 * (1-t) * t * curvedMidPoint.lng() + 
+                   Math.pow(t, 2) * destination.lng();
+        
+        pathPoints.push({ lat: lat, lng: lng });
+      }
+      
+      // Create and display the curved polyline
+      const flightPath = new google.maps.Polyline({
+        path: pathPoints,
+        geodesic: true,
+        strokeColor: "#4285F4",
+        strokeOpacity: 0.8,
+        strokeWeight: 3,
+        icons: [{
+          icon: {
+            path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+            scale: 3,
+            strokeColor: "#4285F4"
+          },
+          repeat: '100px',
+          offset: '0'
+        }],
+        map: map
+      });
+      
+      // Animate the line
+      animateCircle(flightPath);
+    }
+    
+    function animateCircle(line) {
+      let count = 0;
+      window.setInterval(() => {
+        count = (count + 1) % 200;
+        const icons = line.get("icons");
+        icons[0].offset = (count / 2) + "%";
+        line.set("icons", icons);
+      }, 50);
+    }
+    
+    function findNearbyAttractions(location, map) {
+      const service = new google.maps.places.PlacesService(map);
+      
+      service.nearbySearch({
+        location: location,
+        radius: 5000, // 5km radius
+        type: ['tourist_attraction']
+      }, (results, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+          // Limit to top 5 attractions
+          const topAttractions = results.slice(0, 5);
+          
+          topAttractions.forEach(place => {
+            // Create marker for each attraction
+            const marker = new google.maps.Marker({
+              map: map,
+              position: place.geometry.location,
+              title: place.name,
+              icon: {
+                url: 'https://maps.google.com/mapfiles/ms/icons/green-dot.png',
+                scaledSize: new google.maps.Size(32, 32)
+              },
+              animation: google.maps.Animation.DROP
+            });
+            
+            // Create info window with place details
+            const infowindow = new google.maps.InfoWindow({
+              content: `
+                <div style="width: 200px">
+                  <h3 style="margin-top: 0">${place.name}</h3>
+                  <div>Rating: ${place.rating ? place.rating + '/5' : 'N/A'}</div>
+                  ${place.photos ? 
+                    `<img src="${place.photos[0].getUrl({maxWidth: 200, maxHeight: 150})}" 
+                    style="width: 100%; margin-top: 8px">` : ''}
+                  <div style="margin-top: 5px">${place.vicinity || ''}</div>
+                </div>
+              `
+            });
+            
+            // Show info window on click
+            marker.addListener("click", () => {
+              infowindow.open(map, marker);
+            });
+          });
+        }
+      });
+    }
+  </script>
+
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB2lbD-f0PCr-rlojoMzi_q1v7aXZ35TUk&callback=initMap&libraries=places,geometry" async defer></script>
+</body>
+</html>
