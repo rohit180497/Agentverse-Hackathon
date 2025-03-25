@@ -6,5 +6,9 @@
     "RouteAgent": {
         "identity_key": "7f231573c73df1477db3d267297a24458ed8fc78d94685242b45550c6f835856",
         "wallet_key": "CK1TjufC0SBfT/7Hv/Xi5/Jl3JOM0BTCLfXkcRpVFio="
+    },
+    "CloudTestAgent": {
+        "identity_key": "e8ebf40d3e526803ab9b04a11df051db8e116b5ac009da8451de541ef8a2e906",
+        "wallet_key": "Tm8LbKGufAOWdP4HrtCTX7uQbOxXQdo2trDMQ8yASHg="
     }
 }
