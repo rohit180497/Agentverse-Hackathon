@@ -1,0 +1,123 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 50% 98%;
+    --foreground: 210 40% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 210 40% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 40% 10%;
+
+    --primary: 199 89% 36%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 199 89% 90%;
+    --secondary-foreground: 210 40% 10%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 199 89% 48%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 199 89% 36%;
+
+    --radius: 0.75rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 199 89% 48%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 199 89% 60%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 199 89% 48%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  html {
+    font-family: 'Inter', sans-serif;
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-background text-foreground font-light antialiased;
+    letter-spacing: -0.02em;
+    overscroll-behavior: none;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-medium tracking-tight;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-white/70 backdrop-blur-lg border border-white/20 rounded-2xl shadow-lg;
+  }
+  
+  .shimmer {
+    background: linear-gradient(90deg, 
+      rgba(255, 255, 255, 0) 0%, 
+      rgba(255, 255, 255, 0.5) 50%, 
+      rgba(255, 255, 255, 0) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite linear;
+  }
+  
+  .travel-input {
+    @apply px-4 py-3 rounded-xl border border-border bg-white/50 backdrop-blur-sm focus:ring-2 focus:ring-travel-primary/20 focus:border-travel-primary transition-all duration-200 outline-none w-full;
+  }
+  
+  .travel-button {
+    @apply px-6 py-3 rounded-xl font-medium transition-all duration-200 transform hover:translate-y-[-2px] active:translate-y-[1px] shadow-sm flex items-center justify-center gap-2;
+  }
+  
+  .primary-button {
+    @apply travel-button bg-travel-primary text-white hover:bg-travel-primary/90 shadow-travel-primary/20;
+  }
+  
+  .secondary-button {
+    @apply travel-button bg-travel-muted text-travel-primary hover:bg-travel-muted/80;
+  }
+}
