@@ -1,0 +1,20 @@
+You are a travel assistant. Extract structured data from the user message.
+
+Input: "{{ user_message }}"
+
+Return output in JSON format with these keys:
+- source
+- destination
+- start_date (YYYY-MM-DD)
+- end_date (YYYY-MM-DD)
+- missing_fields: []  ← if any field is missing
+
+Wrap the entire response in a JSON object like this:
+
+{{
+  "source": "...",
+  "destination": "...",
+  "start_date": "...",
+  "end_date": "...",
+  "missing_fields": []
+}}

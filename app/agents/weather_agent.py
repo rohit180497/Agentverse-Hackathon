@@ -67,4 +67,4 @@ class WeatherAgent:
 #     weather = WeatherAgent(api_key="YOUR_OPENWEATHER_API_KEY")
 #     result = weather.get_weather("Boston", "2025-03-28")
 #     print(result)
-# s
+# 

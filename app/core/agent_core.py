@@ -2,11 +2,14 @@ from agents.weather_agent import WeatherAgent
 from agents.route_agent import RouteAgent
 from agents.explorer_agent import ExplorerAgent
 from agents.flight_scrapper_agent import FlightSearcher
+from agents.food_agent import FoodExplorerAgent
+from agents.event_agent import EventAgent   
 from core.reasoning import generate_preparedness_advice, generate_route_advice, generate_exploration_advice, generate_flight_advice
 
 
 class TravelGenieCore:
-    def __init__(self, source, destination, start_date, end_date, weather_api_key, route_api_key, explorer_api_key):
+    def __init__(self, source, destination, start_date, end_date, weather_api_key, 
+                 route_api_key, explorer_api_key, google_api_key, event_api_key):
         self.source = source
         self.destination = destination
         self.start_date = start_date
@@ -14,6 +17,8 @@ class TravelGenieCore:
         self.weather_agent = WeatherAgent(weather_api_key)
         self.route_agent = RouteAgent(route_api_key)
         self.explorer_agent = ExplorerAgent(api_key=explorer_api_key)
+        self.food_agent = FoodExplorerAgent(api_key=google_api_key)
+        self.event_agent = EventAgent(api_key=event_api_key)
         self.flight_searcher = FlightSearcher(
             from_city=source,
             to_city=destination,
@@ -42,7 +47,7 @@ class TravelGenieCore:
         return message
 
     def run_route_summary(self):
-        print("✈️ Getting route details...")
+        print("Getting route details...")
 
         route_info = self.route_agent.get_route(self.source, self.destination)
 
@@ -82,3 +87,30 @@ class TravelGenieCore:
         else:
             print("Flight error:", results.get("error"))
             return results.get("error")
+        
+    def run_food_exploration(self):
+        print("Exploring top restaurants in destination...")
+
+        food_results = self.food_agent.get_top_restaurants(self.destination)
+
+        if "error" in food_results:
+            print("Error fetching food recommendations:", food_results["error"])
+            return {"error": "Failed to fetch food recommendations."}
+
+        print("Top Restaurants:")
+        for r in food_results.get("top_restaurants", []):
+            print(f"- {r['name']} ({r['rating']}): {r['address']}")
+
+        return food_results
+
+    def run_event_explorer(self):
+        print("Fetching upcoming events in destination city...")
+        result = self.event_agent.get_events(self.destination, self.start_date)
+        print(result)
+        if "error" in result:
+            print("Event agent error:", result["error"])
+            return result
+
+        # summary = generate_event_summary(self.destination, result)
+        # print("\nEvents Summary:\n", summary)
+        return result

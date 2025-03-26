@@ -63,4 +63,4 @@ def generate_flight_advice(flight_data):
             print(f"⚠️ Error parsing flight: {e}")
 
     headers = ["From", "To", "Airline", "Depart", "Arrive", "Duration", "Stops", "Price"]
-    return "✈️ **Available Flights:**\n\n" + tabulate(rows, headers=headers, tablefmt="github")
+    return "**Available Flights:**\n\n" + tabulate(rows, headers=headers, tablefmt="github")

@@ -10,6 +10,7 @@ from datetime import datetime
 from selenium.common.exceptions import TimeoutException
 from prettytable import PrettyTable
 import pandas as pd
+import undetected_chromedriver as uc
 
 
 class FlightSearcher:
@@ -20,15 +21,18 @@ class FlightSearcher:
         self.departure_date = departure_date
         self.return_date = return_date
         self.driver = None
-        self.options = Options()
+        # self.options = Options()
+        self.options = uc.ChromeOptions()
         self.options.add_argument("--start-maximized")
+        # self.options.add_argument("--window-position=10000,10000")  # Move it offscreen
         print(f"✨ Initializing flight search from {from_city} to {to_city}")
         print(f"📅 Departure: {departure_date} | Return: {return_date}")
     
     def start_browser(self):
         """Launch the browser and navigate to Kayak."""
         print("🚀 Launching Chrome browser...")
-        self.driver = webdriver.Chrome(options=self.options)
+        # self.driver = webdriver.Chrome(options=self.options)
+        self.driver = uc.Chrome(options=self.options)
         self.driver.get("https://www.kayak.com/flights")
         print("🌐 Navigated to Kayak flights page")
         time.sleep(2)
