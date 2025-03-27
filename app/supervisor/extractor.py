@@ -25,11 +25,11 @@ jinja_template = load_prompt_template("prompts/extractor_prompt.txt")
 def extract_trip_details(user_message: str) -> dict:
     try:
         rendered_prompt = jinja_template.render(user_message=user_message)
-        # print("[📝 Rendered Prompt]", rendered_prompt)
+        # print("[endered Prompt]", rendered_prompt)
 
         response = parser.invoke(llm.invoke(rendered_prompt)).strip()
 
-        # ✅ Remove markdown code block wrappers if present
+        # Remove markdown code block wrappers if present
         if response.startswith("```"):
             response = re.sub(r"```(json)?", "", response).strip()
             response = response.replace("```", "").strip()

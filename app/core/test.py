@@ -30,7 +30,7 @@ if __name__ == "__main__":
     )
 
     print("\n================ WEATHER PREPAREDNESS =================")
-    # core.run_weather_preparedness()
+    core.run_weather_preparedness()
 
     print("\n================ ROUTE SUMMARY =================")
     # core.run_route_summary()

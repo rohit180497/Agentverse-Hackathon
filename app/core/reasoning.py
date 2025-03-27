@@ -19,7 +19,7 @@ def generate_preparedness_advice(source, destination, source_weather, dest_weath
     return response.strip()
 
 def generate_route_advice(source, destination, route_info):
-    template = load_prompt_template("prompts/route_advice_prompt.txt")
+    template = load_prompt_template("prompts/route_summary_prompt.txt")
     prompt = template.render(
         source=source,
         destination=destination,

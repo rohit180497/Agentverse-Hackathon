@@ -17,18 +17,11 @@ class SupervisorAgent:
             }
 
         # Log extracted structured data
-        print("[✅ Extracted Trip Info]", extracted)
+        # print("[Extracted Trip Info]", extracted)
 
         # self.memory.update(**{k: v for k, v in extracted.items() if v is not None})
         self.memory.update(**{k: v for k, v in extracted.items() if k in self.memory.trip_data and v is not None})
 
-
-        # self.memory.update(
-        #     source=extracted.get("source"),
-        #     destination=extracted.get("destination"),
-        #     start_date=extracted.get("start_date"),
-        #     end_date=extracted.get("end_date")
-        # )
 
         if self.memory.is_complete():
             print("[🧳 All Trip Details Received]", self.memory.get_trip_details())
