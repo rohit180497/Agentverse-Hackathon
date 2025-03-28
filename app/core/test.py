@@ -3,7 +3,6 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-print(os.getenv("OPEN_WEATHER_API_KEY"))
 
 if __name__ == "__main__":
     source = "Boston"
@@ -15,6 +14,8 @@ if __name__ == "__main__":
     explorer_api_key = os.getenv("GOOGLE_MAPS_API_KEY")
     google_api_key = os.getenv("GOOGLE_MAPS_API_KEY")
     event_api_key = os.getenv("TICKETMASTER_API_KEY")
+    amaudeus_api_key = os.getenv("AMADEUS_API_KEY")
+    amadeus_api_secret = os.getenv("AMADEUS_SECRET_KEY")
 
 
     core = TravelGenieCore(
@@ -26,23 +27,31 @@ if __name__ == "__main__":
         route_api_key=route_api_key,
         explorer_api_key = explorer_api_key,
         google_api_key= google_api_key,
-        event_api_key= event_api_key
+        event_api_key= event_api_key,
+        amadeus_api_key= amaudeus_api_key,
+        amadeus_api_secret= amadeus_api_secret
     )
 
     print("\n================ WEATHER PREPAREDNESS =================")
-    core.run_weather_preparedness()
+    # core.run_weather_preparedness()
 
     print("\n================ ROUTE SUMMARY =================")
     # core.run_route_summary()
 
     print("\n================ PLACES EXPLORATION SUMMARY =================")
-    # core.run_exploration_guide()
+    # places= core.run_exploration_guide()
+    # print(places)
 
-    print("\n================ FLIGHT SEARCH SUMMARY =================")
+    # print("\n================ FLIGHT SEARCH SUMMARY =================")
     # core.run_flight_search()
 
+    print("\n================ FLIGHT SEARCH SUMMARY =================")
+    flight_result = core.run_flight_search()
+    print(flight_result)
+
     print("\n================ FOOD EXPLORATION SUMMARY =================")
-    # core.run_food_exploration()
+    # food =core.run_food_exploration()
+    # print(food)
 
     print("\n================ EVENT EXPLORATION SUMMARY =================")
     # core.run_event_explorer()

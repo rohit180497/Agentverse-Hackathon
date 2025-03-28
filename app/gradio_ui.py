@@ -8,15 +8,15 @@ import os
 # Initialize agent
 agent = SupervisorAgent()
 
-# Global flag to manage TravelGenieCore trigger after confirmation
-confirmation_sent = False
-last_trip_details = None
+# Global store for trip details
+last_trip_details = {}
 
 
 # Core chat function with error handling
-def chat_fn(message, history):
+def chat_fn(message, history, run_core=False):
+    global last_trip_details
     try:
-        result = agent.chat(message)
+        result = agent.chat(message, history)
 
         if "error" in result:
             print("[Error from SupervisorAgent]", result)
@@ -25,8 +25,15 @@ def chat_fn(message, history):
         print("[✅Agent Response]", result.get("message"))
 
         if result.get("ready"):
-            trip = result["trip_details"]
+            if result.get("ready"):
+                trip = result["trip_details"]
             print("[🚀 Triggering TravelGenieCore with:]", trip)
+
+            travelgenie_start_msg = result.get("message")
+                
+            if not run_core:
+                # Step 1: Return just this message now
+                return travelgenie_start_msg
 
             core = TravelGenieCore(
                 source=trip["source"],
@@ -37,7 +44,9 @@ def chat_fn(message, history):
                 route_api_key=os.getenv("GOOGLE_MAPS_API_KEY"),
                 explorer_api_key=os.getenv("GOOGLE_MAPS_API_KEY"),
                 google_api_key=os.getenv("GOOGLE_MAPS_API_KEY"),
-                event_api_key=os.getenv("TICKETMASTER_API_KEY")
+                event_api_key=os.getenv("TICKETMASTER_API_KEY"),
+                amadeus_api_key = os.getenv("AMADEUS_API_KEY"),
+                amadeus_api_secret = os.getenv("AMADEUS_SECRET_KEY")                    
             )
 
             # Run all TravelGenie agents
@@ -49,10 +58,14 @@ def chat_fn(message, history):
             print("Explore response ready", explore)
             food = core.run_food_exploration()
             print("Food response ready", food)
-            # flights = core.run_flight_search()
-            # print("Flight response ready", flights)
+            flights = core.run_flight_search()
+            print("Flight response ready", flights)
             events = core.run_event_explorer()
             print("Event response ready", events)
+
+            llm_input = core.extract_llm_summary_fields(weather, route, explore, food, flights, events)
+            print("LLM Input Prepared", llm_input)
+            print("Final Summary Prepared")
 
             return "final_summary Prepared"
 
@@ -88,6 +101,10 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
 
     send_btn.click(user_input, [msg, chatbot], [msg, chatbot])
     msg.submit(user_input, [msg, chatbot], [msg, chatbot])
+
+    # Run TravelGenieCore
+    core_btn.click(run_travelgenie_core, [chatbot], [chatbot])
+
     clear_btn.click(lambda: ([], ""), outputs=[chatbot, msg])
 
 if __name__ == "__main__":
