@@ -120,101 +120,12 @@ class TravelGenieCore:
 
     def run_event_explorer(self):
         print("Fetching upcoming events in destination city...")
-        event_data = self.event_agent.get_events(self.destination, self.start_date)
-        # print(event_data)
-        if "error" in event_data:
-            print("Event agent error:", event_data["error"])
-            return event_data
-        
-        return event_data["events"]
-    
-    def run_flight_search(self):
-        print("\n Searching for flights...")
-        try:
-            flight_data = self.amadeus_flight_search.search_flights(
-                origin_city=self.source,
-                destination_city=self.destination,
-                departure_date=self.start_date,
-                return_date=self.end_date,
-                adults=1
-            )
+        result = self.event_agent.get_events(self.destination, self.start_date)
+        print(result)
+        if "error" in result:
+            print("Event agent error:", result["error"])
+            return result
 
-            if not flight_data:
-                print("No flights found.")
-                return {"error": "No flight data available."}
-
-            # print("\n Top Flight Options:")
-            # for row in flight_data:
-            #     print(
-            #         f"Option {row['option']} | {row['price']} | "
-            #         f"{row['from']} → {row['to']} | "
-            #         f"{row['departure']} → {row['arrival']} | "
-            #         f"{row['airline']} | {row['duration']}"
-            #     )
-
-            return flight_data
-
-        except Exception as e:
-            print("Flight Search Error:", e)
-            return {"error": str(e)}
-
-    def extract_llm_summary_fields(self, weather, route, explore, food, flights, events):
-        summary = {}
-
-        try:
-            if weather and "error" not in weather:
-                summary["weather"] = weather
-        except:
-            pass
-
-        try:
-            if route and "error" not in route:
-                summary["route"] = route
-        except:
-            pass
-
-        try:
-            if explore and "error" not in explore:
-                summary["explore"] = [
-                    f"{place['name']} ({place['rating']}): {place['address']}"
-                    for place in explore
-                ]
-        except:
-            pass
-
-        try:
-            if food and "error" not in food:
-                summary["food"] = [
-                    f"{place['name']} ({place['rating']}): {place['address']}"
-                    for place in food
-                ]
-        except:
-            pass
-
-        try:
-            if events and "error" not in events:
-                summary["events"] = [
-                    f"{show['name']} ({show['venue']}): {show['category']}"
-                    for show in events
-                ]
-        except:
-            pass
-
-        try:
-            if flights and isinstance(flights, list):
-                flight_summary = {}
-                for flight in flights:
-                    opt = flight.get("option")
-                    if opt not in flight_summary:
-                        flight_summary[opt] = {
-                            "price": flight["price"],
-                            "segments": []
-                        }
-                    flight_summary[opt]["segments"].append(
-                        f"{flight['from']} → {flight['to']} | {flight['departure']} → {flight['arrival']} | {flight['airline']} ({flight['duration']})"
-                    )
-                summary["flights"] = list(flight_summary.values())[:5]
-        except:
-            pass
-
-        return summary
+        # summary = generate_event_summary(self.destination, result)
+        # print("\nEvents Summary:\n", summary)
+        return result

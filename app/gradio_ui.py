@@ -12,6 +12,7 @@ load_dotenv()
 agent = SupervisorAgent()
 last_trip_details = {}
 
+<<<<<<< HEAD
 confirmation_keywords = ["yes", "yess", "okay", "ok", "okz", "yep", "yup", "yupp", "yupp", "sure", "confirm", "go ahead", "i confirm", "yes i confirm"]
 
 # --- Main Chat Handler ---
@@ -25,6 +26,16 @@ def chat_fn(message, history):
             return run_travelgenie_core(history)
 
         # Otherwise, extract trip details
+=======
+# Global store for trip details
+last_trip_details = {}
+
+
+# Core chat function with error handling
+def chat_fn(message, history, run_core=False):
+    global last_trip_details
+    try:
+>>>>>>> 928f0050b0fc8001493a51ba958e5b2bf0a2354c
         result = agent.chat(message, history)
 
         if "error" in result:
@@ -34,6 +45,7 @@ def chat_fn(message, history):
         print("[Agent Response]", result.get("message"))
 
         if result.get("ready"):
+<<<<<<< HEAD
             trip = result["trip_details"]
             last_trip_details = trip
             trip_msg = result.get("message", "✅ All trip details received!") + "\n\nPlease type \"Yes\" to confirm and start planning your itinerary."
@@ -42,6 +54,55 @@ def chat_fn(message, history):
 
         return "", history + [(message, result.get("message", "⚠️ No response message returned."))]
 
+=======
+            if result.get("ready"):
+                trip = result["trip_details"]
+            print("[🚀 Triggering TravelGenieCore with:]", trip)
+
+            travelgenie_start_msg = result.get("message")
+                
+            if not run_core:
+                # Step 1: Return just this message now
+                return travelgenie_start_msg
+
+            core = TravelGenieCore(
+                source=trip["source"],
+                destination=trip["destination"],
+                start_date=trip["start_date"],
+                end_date=trip["end_date"],
+                weather_api_key=os.getenv("OPEN_WEATHER_API_KEY"),
+                route_api_key=os.getenv("GOOGLE_MAPS_API_KEY"),
+                explorer_api_key=os.getenv("GOOGLE_MAPS_API_KEY"),
+                google_api_key=os.getenv("GOOGLE_MAPS_API_KEY"),
+                event_api_key=os.getenv("TICKETMASTER_API_KEY"),
+                amadeus_api_key = os.getenv("AMADEUS_API_KEY"),
+                amadeus_api_secret = os.getenv("AMADEUS_SECRET_KEY")                    
+            )
+
+            # Run all TravelGenie agents
+            weather = core.run_weather_preparedness()
+            print("Weather response ready", weather)
+            route = core.run_route_summary()
+            print("Route response ready", route)
+            explore = core.run_exploration_guide()
+            print("Explore response ready", explore)
+            food = core.run_food_exploration()
+            print("Food response ready", food)
+            flights = core.run_flight_search()
+            print("Flight response ready", flights)
+            events = core.run_event_explorer()
+            print("Event response ready", events)
+
+            llm_input = core.extract_llm_summary_fields(weather, route, explore, food, flights, events)
+            print("LLM Input Prepared", llm_input)
+            print("Final Summary Prepared")
+
+            return "final_summary Prepared"
+
+
+        return result.get("message", "⚠️ No response message returned.")
+    
+>>>>>>> 928f0050b0fc8001493a51ba958e5b2bf0a2354c
     except Exception as e:
         print("[Unhandled Exception]", str(e))
         return "", history + [(message, f"Unexpected error: {str(e)}")]
@@ -110,7 +171,28 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
     send_btn.click(chat_fn, [msg, chatbot], [msg, chatbot])
     msg.submit(chat_fn, [msg, chatbot], [msg, chatbot])
 
+<<<<<<< HEAD
     # Clear chat
+=======
+    # User message input + call agent + update chat
+    def user_input(user_msg, chat_history):
+        if not user_msg.strip():
+            return "", chat_history
+        
+        print(">> User:", user_msg)
+        response = chat_fn(user_msg, chat_history)
+        print("<< Agent:", response)
+        
+        chat_history.append((user_msg, response))
+        return "", chat_history
+
+    send_btn.click(user_input, [msg, chatbot], [msg, chatbot])
+    msg.submit(user_input, [msg, chatbot], [msg, chatbot])
+
+    # Run TravelGenieCore
+    core_btn.click(run_travelgenie_core, [chatbot], [chatbot])
+
+>>>>>>> 928f0050b0fc8001493a51ba958e5b2bf0a2354c
     clear_btn.click(lambda: ([], ""), outputs=[chatbot, msg])
 
 if __name__ == "__main__":
