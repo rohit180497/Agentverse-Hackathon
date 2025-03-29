@@ -1,122 +1,117 @@
 
-import { useState, useRef, useEffect } from "react";
-import { Chatbot } from "@/components/Chatbot";
-import { Dashboard } from "@/components/Dashboard";
-import { Header } from "@/components/Header";
+import { useState } from "react";
+import Header from "@/components/Header";
+import Chatbot from "@/components/Chatbot";
+import TravelDashboard from "@/components/dashboard/TravelDashboard";
+import { TravelQuery, TripItinerary } from "@/types/travel";
+import { TravelService } from "@/services/TravelService";
+import { toast } from "@/components/ui/use-toast";
 
 const Index = () => {
-  const [showDashboard, setShowDashboard] = useState(false);
-  const [chatHistory, setChatHistory] = useState<Array<{text: string, sender: 'user' | 'bot', timestamp: Date}>>([
-    {
-      text: "Hi there! I'm TravelGenie, your AI travel companion. Where would you like to travel to?",
-      sender: 'bot',
-      timestamp: new Date()
-    }
-  ]);
-  const [tripInfo, setTripInfo] = useState({
-    origin: '',
-    destination: '',
-    departureDate: '',
-    returnDate: '',
-    travelers: 1
-  });
+  const [travelQuery, setTravelQuery] = useState<TravelQuery | null>(null);
+  const [itinerary, setItinerary] = useState<TripItinerary | undefined>(undefined);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
+  const [dashboardVisible, setDashboardVisible] = useState(false);
 
-  const bottomRef = useRef<HTMLDivElement>(null);
-
-  // Scroll to bottom when chat history updates
-  useEffect(() => {
-    if (bottomRef.current) {
-      bottomRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [chatHistory]);
-
-  const handleUserMessage = (message: string) => {
-    // Add user message to chat
-    setChatHistory(prev => [...prev, {
-      text: message,
-      sender: 'user',
-      timestamp: new Date()
-    }]);
+  const handleSubmitQuery = async (query: TravelQuery) => {
+    setTravelQuery(query);
+    setIsGenerating(true);
     
-    // Simulate AI response
-    setTimeout(() => {
-      // Example logic to parse user input - in real app this would be handled by an LLM
-      if (!tripInfo.destination && message.toLowerCase().includes('to')) {
-        const destination = message.toLowerCase().split('to')[1].trim().split(' ')[0];
-        setTripInfo(prev => ({...prev, destination: destination.charAt(0).toUpperCase() + destination.slice(1)}));
-        
-        setChatHistory(prev => [...prev, {
-          text: `Great! You want to travel to ${destination.charAt(0).toUpperCase() + destination.slice(1)}. When are you planning to depart?`,
-          sender: 'bot',
-          timestamp: new Date()
-        }]);
-      } 
-      else if (!tripInfo.departureDate && (message.toLowerCase().includes('tomorrow') || message.toLowerCase().includes('next') || message.toLowerCase().includes('on'))) {
-        // Simulate date parsing
-        const today = new Date();
-        const departureDateObj = new Date(today);
-        departureDateObj.setDate(today.getDate() + 7); // Just add 7 days as example
-        const departureDate = departureDateObj.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-        
-        setTripInfo(prev => ({...prev, departureDate}));
-        
-        setChatHistory(prev => [...prev, {
-          text: `Got it! You'll be departing on ${departureDate}. And when will you return?`,
-          sender: 'bot',
-          timestamp: new Date()
-        }]);
-      }
-      else if (!tripInfo.returnDate && (message.toLowerCase().includes('back') || message.toLowerCase().includes('return'))) {
-        // Simulate date parsing for return
-        const today = new Date();
-        const returnDateObj = new Date(today);
-        returnDateObj.setDate(today.getDate() + 14); // Add 14 days as example
-        const returnDate = returnDateObj.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-        
-        setTripInfo(prev => ({...prev, returnDate, origin: 'Boston'})); // Also set origin as example
-        
-        // All info collected, show final response and transition to dashboard
-        setChatHistory(prev => [...prev, {
-          text: `Perfect! I'll plan your trip from Boston to ${tripInfo.destination}, departing on ${tripInfo.departureDate} and returning on ${returnDate}. Let me gather some information for you...`,
-          sender: 'bot',
-          timestamp: new Date()
-        }]);
-        
-        // Trigger dashboard display after a delay
-        setTimeout(() => {
-          setShowDashboard(true);
-        }, 2000);
-      }
-      else {
-        // Generic response
-        setChatHistory(prev => [...prev, {
-          text: "I'm sorry, I didn't understand that. Could you tell me where you'd like to travel to?",
-          sender: 'bot',
-          timestamp: new Date()
-        }]);
-      }
-    }, 1000);
+    try {
+      // Step 1: Show "Generating Itinerary" message
+      await TravelService.generateItinerary(query);
+      
+      // Step 2: Once that's done, fetch the actual itinerary
+      const itineraryData = await TravelService.fetchItinerary(query);
+      
+      // Step 3: Update the UI with the fetched data
+      setItinerary(itineraryData);
+      setDashboardVisible(true);
+      
+      // Step 4: Minimize chat after itinerary is ready
+      setIsMinimized(true);
+      
+      toast({
+        title: "Itinerary Ready",
+        description: "Your personalized travel plan has been generated!",
+      });
+    } catch (error) {
+      console.error("Error generating itinerary:", error);
+      toast({
+        title: "Error",
+        description: "Failed to generate itinerary. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const toggleChatMinimize = () => {
+    setIsMinimized(prev => !prev);
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <div className={`transition-all duration-500 ${showDashboard ? 'flex justify-center pt-2' : ''}`}>
-        <Header />
-      </div>
+    <div className="min-h-screen flex flex-col bg-background">
+      <Header />
       
-      <div className="flex-1 flex relative">
-        <div className={`dashboard-container ${showDashboard ? 'visible' : ''}`}>
-          <Dashboard tripInfo={tripInfo} />
+      <main className="flex-1 container mx-auto p-4 md:p-6">
+        <div className="max-w-4xl mx-auto mb-8 text-center animate-fade-in">
+          <h1 className="text-3xl md:text-4xl font-bold mb-4 mt-10">Welcome to TravelGenie AI-Agent</h1>
+          <p className="text-xl text-muted-foreground">
+            Your intelligent travel companion. Let me plan your perfect trip!
+          </p>
         </div>
         
-        <div className={`chat-container ${showDashboard ? 'shifted h-screen pt-2 pb-2' : 'h-[calc(100vh-10rem)]'}`}>
-          <Chatbot 
-            chatHistory={chatHistory} 
-            onSendMessage={handleUserMessage}
-            bottomRef={bottomRef}
-          />
+        <div className="flex flex-col lg:flex-row gap-6">
+          {dashboardVisible ? (
+            <div className="flex-1">
+              <TravelDashboard 
+                query={travelQuery!} 
+                data={itinerary} 
+                isLoading={isGenerating} 
+              />
+            </div>
+          ) : (
+            <div className="flex-1 flex items-center justify-center">
+              <div className="max-w-xl w-full text-center p-8 bg-accent rounded-lg animate-fade-in">
+                <h2 className="text-2xl font-semibold mb-4">How It Works</h2>
+                <ul className="space-y-4 text-left">
+                  <li className="flex items-start gap-2">
+                    <span className="bg-primary text-white rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">1</span>
+                    <span>Tell TravelGenie about your origin city and destination</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="bg-primary text-white rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">2</span>
+                    <span>Provide your travel dates</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="bg-primary text-white rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">3</span>
+                    <span>Get a personalized travel itinerary with routes, weather, flights, popular places, and more</span>
+                  </li>
+                </ul>
+                <p className="mt-6 text-muted-foreground">Start by chatting with TravelGenie on the right →</p>
+              </div>
+            </div>
+          )}
+          
+          <div className={`${isMinimized && dashboardVisible ? "" : "w-full md:w-96"}`}>
+            <Chatbot 
+              onSubmit={handleSubmitQuery} 
+              isGenerating={isGenerating} 
+              isMinimized={isMinimized}
+              onToggleMinimize={toggleChatMinimize}
+            />
+          </div>
         </div>
-      </div>
+      </main>
+      
+      <footer className="py-6 border-t bg-muted/50">
+        <div className="container mx-auto text-center text-sm text-muted-foreground">
+          © {new Date().getFullYear()} TravelGenie AI-Agent. All rights reserved.
+        </div>
+      </footer>
     </div>
   );
 };

@@ -143,14 +143,14 @@ class TravelGenieCore:
                 print("No flights found.")
                 return {"error": "No flight data available."}
 
-            print("\n Top Flight Options:")
-            for row in flight_data:
-                print(
-                    f"Option {row['option']} | {row['price']} | "
-                    f"{row['from']} → {row['to']} | "
-                    f"{row['departure']} → {row['arrival']} | "
-                    f"{row['airline']} | {row['duration']}"
-                )
+            # print("\n Top Flight Options:")
+            # for row in flight_data:
+            #     print(
+            #         f"Option {row['option']} | {row['price']} | "
+            #         f"{row['from']} → {row['to']} | "
+            #         f"{row['departure']} → {row['arrival']} | "
+            #         f"{row['airline']} | {row['duration']}"
+            #     )
 
             return flight_data
 

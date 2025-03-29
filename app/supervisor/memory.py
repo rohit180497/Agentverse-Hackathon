@@ -20,3 +20,6 @@ class SessionMemory:
 
     def is_complete(self):
         return all(self.trip_data.values())
+    
+    def clear(self):  
+        self.trip_data = {k: None for k in self.trip_data}

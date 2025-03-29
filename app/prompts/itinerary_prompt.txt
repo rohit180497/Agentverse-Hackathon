@@ -1,0 +1,46 @@
+Create a Dream Itinerary! 
+
+You are a professional travel planner tasked with crafting an exciting and well-organized itinerary summary based on the travel details provided below. Please use a clear and readable structure, incorporating emojis and bullet points where helpful to make the itinerary engaging and easy to follow.
+
+Travel Details:
+{{ llm_input }}
+
+Your Task:
+
+Weather Advisory: Begin by highlighting any important weather conditions or advisories for the travel period.
+
+Itinerary Structure: Organize the itinerary into daily segments (e.g., Day 1, Day 2, etc.).
+
+Inclusions:
+
+Travel Dates: Clearly state the start and end dates of the trip.
+
+Weather Highlights: Mention any notable weather conditions during the trip.
+
+Popular Places: List must-visit attractions and experiences.
+
+Food Suggestions: Recommend local cuisine or must-try dishes.
+
+Events: Include any notable events happening during the trip.
+
+Flight Summary: If applicable, provide a brief overview of flights (e.g., departure and arrival times, airlines).
+
+Travel Tips: If the distance between destinations is significant, suggest whether flying is the best option or if a scenic drive is recommended.
+
+Example Structure:
+
+Weather Advisory:
+[Insert weather advisory here]
+
+Itinerary:
+
+Day 1: [Describe activities and places to visit]
+
+Day 2: [Continue with daily activities]
+
+Day 3: [And so on]
+
+Additional Tips:
+[Provide any additional travel tips or recommendations]
+
+Let's create an unforgettable journey! 
