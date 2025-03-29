@@ -1,0 +1,112 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 195 100% 98%;
+    --foreground: 200 15% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 200 15% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 200 15% 15%;
+
+    --primary: 196 75% 45%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 195 20% 93%;
+    --secondary-foreground: 200 15% 15%;
+
+    --muted: 195 20% 93%;
+    --muted-foreground: 200 15% 40%;
+
+    --accent: 196 75% 95%;
+    --accent-foreground: 196 75% 30%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 200 15% 90%;
+    --input: 200 15% 90%;
+    --ring: 196 75% 45%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 200 15% 12%;
+    --foreground: 195 20% 93%;
+
+    --card: 200 15% 15%;
+    --card-foreground: 195 20% 93%;
+
+    --popover: 200 15% 15%;
+    --popover-foreground: 195 20% 93%;
+
+    --primary: 196 75% 45%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 200 15% 20%;
+    --secondary-foreground: 195 20% 93%;
+
+    --muted: 200 15% 20%;
+    --muted-foreground: 200 15% 60%;
+
+    --accent: 196 75% 25%;
+    --accent-foreground: 195 20% 93%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 195 20% 93%;
+
+    --border: 200 15% 25%;
+    --input: 200 15% 25%;
+    --ring: 196 75% 45%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+.travel-gradient {
+  background-image: linear-gradient(135deg, #46b3e6 0%, #074a80 100%);
+}
+
+.travel-card {
+  @apply bg-card rounded-lg shadow-md border border-border overflow-hidden;
+}
+
+.chat-container {
+  max-height: calc(100vh - 180px);
+}
+
+.dashboard-container {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
