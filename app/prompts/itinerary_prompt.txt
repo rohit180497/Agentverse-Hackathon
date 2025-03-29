@@ -9,7 +9,7 @@ Your Task:
 
 Weather Advisory: Begin by highlighting any important weather conditions or advisories for the travel period.
 
-Itinerary Structure: Organize the itinerary into daily segments (e.g., Day 1, Day 2, etc.).
+Itinerary Structure: Organize the itinerary into daily segments (e.g., Day 1, Day 2, etc.). Only make heading points bold all other teext should be normal.
 
 Inclusions:
 

@@ -56,7 +56,7 @@ class SupervisorAgent:
 
                 return {
                     "message": (
-                        f"I'm just a step away! To get started, I still need a few more details from you. "
+                        f"I'm just a step away! To get started, I still need a few more trip details from you. "
                         f"{', '.join(pretty_missing)}.\n\n"
                         f"Just type it in and I'll take care of the rest!!"
                     ),

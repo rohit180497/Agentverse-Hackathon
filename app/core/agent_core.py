@@ -120,7 +120,7 @@ class TravelGenieCore:
 
     def run_event_explorer(self):
         print("Fetching upcoming events in destination city...")
-        event_data = self.event_agent.get_events(self.destination, self.start_date)
+        event_data = self.event_agent.get_events(self.destination, self.start_date, self.end_date)
         # print(event_data)
         if "error" in event_data:
             print("Event agent error:", event_data["error"])
