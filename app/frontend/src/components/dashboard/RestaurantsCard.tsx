@@ -1,7 +1,6 @@
-
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Restaurant } from "@/types/travel";
-import { MapPin, Star, Utensils } from "lucide-react";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { UtensilsCrossed, Star } from "lucide-react";
 
 interface RestaurantsCardProps {
   data?: Restaurant[];
@@ -10,51 +9,53 @@ interface RestaurantsCardProps {
 
 const RestaurantsCard = ({ data, isLoading }: RestaurantsCardProps) => {
   return (
-    <Card className="h-full">
-      <CardHeader className="pb-2">
-        <CardTitle className="text-lg flex items-center gap-2">
-          <Utensils className="w-5 h-5 text-primary" />
-          Recommended Restaurants
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <UtensilsCrossed className="w-5 h-5 text-primary" />
+          Best Restaurants
         </CardTitle>
       </CardHeader>
-      <CardContent>
+
+      <CardContent className="relative overflow-x-auto">
         {isLoading ? (
-          <div className="animate-pulse space-y-4">
-            <div className="h-48 bg-muted rounded-md"></div>
-            <div className="h-48 bg-muted rounded-md"></div>
+          <div className="flex gap-4 animate-pulse">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="min-w-[180px] h-52 bg-muted rounded-lg"></div>
+            ))}
           </div>
-        ) : data && data.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {data.map((restaurant) => (
-              <div key={restaurant.id} className="rounded-md overflow-hidden border">
-                <div className="relative h-40">
-                  <img 
-                    src={restaurant.image} 
-                    alt={restaurant.name} 
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2">
-                    <h3 className="text-white font-semibold">{restaurant.name}</h3>
-                    <div className="flex items-center text-white/90 text-sm">
-                      <Star className="h-4 w-4 text-yellow-400 mr-1" />
-                      <span>{restaurant.rating.toFixed(1)}</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="p-3">
-                  <p className="text-sm font-medium">{restaurant.cuisine} · {restaurant.priceRange}</p>
-                  <p className="text-sm text-muted-foreground flex items-center mt-1">
-                    <MapPin className="h-3 w-3 mr-1 flex-shrink-0" />
+        ) : data?.length ? (
+          <div className="flex gap-4 overflow-x-auto scroll-smooth pb-2">
+            {data.map((restaurant, i) => (
+              <div
+                key={i}
+                className="min-w-[200px] max-w-[200px] bg-white rounded-xl shadow border"
+              >
+                <img
+                  src={restaurant.photo_url}
+                  alt={restaurant.name}
+                  className="w-full h-32 object-cover rounded-t-xl"
+                />
+                <div className="p-2">
+                  <h4 className="text-sm font-semibold truncate">{restaurant.name}</h4>
+                  <p className="text-xs text-muted-foreground truncate">
                     {restaurant.address}
                   </p>
+                  <div className="flex items-center text-sm mt-1 gap-1">
+                    <Star className="w-4 h-4 text-yellow-500" />
+                    {restaurant.rating}
+                    <span className="text-xs text-muted-foreground">
+                      ({restaurant.total_ratings ?? "N/A"})
+                    </span>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          <div className="text-center py-8 text-muted-foreground">
-            Restaurant recommendations will appear here
-          </div>
+          <p className="text-sm text-muted-foreground">
+            No restaurant data available.
+          </p>
         )}
       </CardContent>
     </Card>

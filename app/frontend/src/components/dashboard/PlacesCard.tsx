@@ -1,60 +1,77 @@
-
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PopularPlace } from "@/types/travel";
-import { MapPin, Star } from "lucide-react";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { MapPin, Star, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
+import { TripItinerary } from "@/types/travel";
+import { useRef } from "react";
 
 interface PlacesCardProps {
-  data?: PopularPlace[];
+  data?: TripItinerary["explore"];
   isLoading: boolean;
 }
 
 const PlacesCard = ({ data, isLoading }: PlacesCardProps) => {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const scroll = (direction: "left" | "right") => {
+    if (scrollRef.current) {
+      const scrollAmount = 300;
+      scrollRef.current.scrollBy({ left: direction === "left" ? -scrollAmount : scrollAmount, behavior: "smooth" });
+    }
+  };
+
   return (
-    <Card className="h-full">
-      <CardHeader className="pb-2">
-        <CardTitle className="text-lg flex items-center gap-2">
+    <Card className="shadow-md rounded-lg">
+      <CardHeader className="flex items-center justify-between">
+        <CardTitle className="flex items-center gap-2">
           <MapPin className="w-5 h-5 text-primary" />
-          Popular Places
+          Popular Places to Explore
         </CardTitle>
+        {data && data.length > 0 && (
+          <div className="flex gap-2">
+            <button onClick={() => scroll("left")} className="hover:bg-muted p-1 rounded">
+              <ChevronLeft className="h-5 w-5" />
+            </button>
+            <button onClick={() => scroll("right")} className="hover:bg-muted p-1 rounded">
+              <ChevronRight className="h-5 w-5" />
+            </button>
+          </div>
+        )}
       </CardHeader>
-      <CardContent>
+
+      <CardContent className="overflow-x-auto">
         {isLoading ? (
-          <div className="animate-pulse space-y-4">
-            <div className="h-48 bg-muted rounded-md"></div>
-            <div className="h-48 bg-muted rounded-md"></div>
+          <div className="flex items-center justify-center py-6">
+            <Loader2 className="animate-spin w-5 h-5 mr-2" />
+            <span>Loading places...</span>
           </div>
         ) : data && data.length > 0 ? (
-          <div className="space-y-4">
-            {data.map((place) => (
-              <div key={place.id} className="rounded-md overflow-hidden border">
-                <div className="relative h-48">
-                  <img 
-                    src={place.image} 
-                    alt={place.name} 
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3">
-                    <h3 className="text-white font-semibold text-lg">{place.name}</h3>
-                    <div className="flex items-center text-white/90 text-sm">
-                      <Star className="h-4 w-4 text-yellow-400 mr-1" />
-                      <span>{place.rating.toFixed(1)}</span>
-                    </div>
+          <div
+            ref={scrollRef}
+            className="flex gap-4 overflow-x-auto scrollbar-hide pb-2"
+          >
+            {data.map((place, idx) => (
+              <div
+                key={idx}
+                className="min-w-[250px] bg-muted rounded-lg shadow-sm overflow-hidden"
+              >
+                <img
+                  src={place.photo_url}
+                  alt={place.name}
+                  className="h-40 w-full object-cover"
+                />
+                <div className="p-3 space-y-1">
+                  <h3 className="font-medium text-base">{place.name}</h3>
+                  <p className="text-xs text-muted-foreground">{place.address}</p>
+                  <div className="flex items-center gap-1 text-xs">
+                    <Star className="h-4 w-4 text-yellow-500" />
+                    <span>{place.rating}</span>
+                    <span className="text-muted-foreground">({place.total_ratings})</span>
                   </div>
-                </div>
-                <div className="p-3">
-                  <p className="text-sm text-muted-foreground flex items-center">
-                    <MapPin className="h-3 w-3 mr-1 flex-shrink-0" />
-                    {place.address}
-                  </p>
-                  <p className="mt-2 text-sm">{place.description}</p>
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          <div className="text-center py-8 text-muted-foreground">
-            Popular places will appear here
-          </div>
+          <p className="text-muted-foreground text-sm">No popular places found.</p>
         )}
       </CardContent>
     </Card>
