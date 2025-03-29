@@ -120,25 +120,13 @@ class TravelGenieCore:
 
     def run_event_explorer(self):
         print("Fetching upcoming events in destination city...")
-        event_data = self.event_agent.get_events(self.destination, self.start_date)
-        # print(event_data)
-        if "error" in event_data:
-            print("Event agent error:", event_data["error"])
-            return event_data
-        
-        return event_data["events"]
-    
-    def run_flight_search(self):
-        print("\n Searching for flights...")
-        try:
-            flight_data = self.amadeus_flight_search.search_flights(
-                origin_city=self.source,
-                destination_city=self.destination,
-                departure_date=self.start_date,
-                return_date=self.end_date,
-                adults=1
-            )
+        result = self.event_agent.get_events(self.destination, self.start_date)
+        print(result)
+        if "error" in result:
+            print("Event agent error:", result["error"])
+            return result
 
+<<<<<<< HEAD
             if not flight_data:
                 print("No flights found.")
                 return {"error": "No flight data available."}
@@ -218,3 +206,8 @@ class TravelGenieCore:
             pass
 
         return summary
+=======
+        # summary = generate_event_summary(self.destination, result)
+        # print("\nEvents Summary:\n", summary)
+        return result
+>>>>>>> 518b876541f0a18d1c276cd627028591b6c7074d
