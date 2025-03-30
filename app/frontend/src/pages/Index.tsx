@@ -8,7 +8,22 @@ import { TravelService } from "@/services/TravelService";
 import { toast } from "@/components/ui/use-toast";
 import HowItWorks from "@/components/HowItWorks";
 import LoaderOverlay from "@/components/loaderOverlay";
+import { useRouter } from "next/router";
 
+
+// const tempHeader = () => {
+//   const router = useRouter();
+
+//   const handleHomeClick = () => {
+//     router.replace(router.asPath); // triggers page refresh
+//   };
+
+//   return (
+//     // ...
+//     <span onClick={handleHomeClick} className="cursor-pointer hover:underline">Home</span>
+//     // ...
+//   );
+// };
 
 const Index = () => {
   const [travelQuery, setTravelQuery] = useState<TravelQuery | null>(null);
