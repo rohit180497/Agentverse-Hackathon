@@ -60,8 +60,8 @@ const WeatherCard = ({ data, isLoading }: WeatherCardProps) => {
 
   return (
     <Card className="h-full">
-      <CardHeader className="pb-2">
-        <CardTitle className="text-lg flex items-center gap-2">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
           <CloudSun className="w-5 h-5 text-primary" />
           Weather Forecast
         </CardTitle>

@@ -22,7 +22,7 @@ const RouteCard = ({ data, isLoading }: RouteCardProps) => {
             <span>Loading route information...</span>
           </div>
         ) : data ? (
-          <p className="text-sm text-muted-foreground">{data}</p>
+          <p className="text-lg flex items-center gap-2">{data}</p>
         ) : (
           <p className="text-sm text-muted-foreground">No route data available.</p>
         )}

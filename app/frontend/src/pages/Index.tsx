@@ -7,6 +7,7 @@ import { TravelQuery, TripItinerary } from "@/types/travel";
 import { TravelService } from "@/services/TravelService";
 import { toast } from "@/components/ui/use-toast";
 import HowItWorks from "@/components/HowItWorks";
+import LoaderOverlay from "@/components/loaderOverlay";
 
 
 const Index = () => {
@@ -15,6 +16,8 @@ const Index = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [dashboardVisible, setDashboardVisible] = useState(false);
+  const [showLoader, setShowLoader] = useState(false);
+
 
   const handleSubmitQuery = async (query: TravelQuery) => {
     setTravelQuery(query);
@@ -56,6 +59,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      {showLoader && <LoaderOverlay />}
       <Header />
 
       <main className="flex-1 container mx-auto p-4 md:p-6">
@@ -83,6 +87,7 @@ const Index = () => {
                   isGenerating={isGenerating}
                   isMinimized={isMinimized}
                   onToggleMinimize={toggleChatMinimize}
+                  onShowLoader={setShowLoader}
                   onItineraryReady={(data, query) => {
                     setItinerary(data);
                     setTravelQuery(query);
@@ -95,35 +100,40 @@ const Index = () => {
           ) : (
             // Floating bottom-right style after dashboard is visible
             <>
-            <div className="flex-1">
+              <div className="flex-1">
                 <TravelDashboard
                   query={travelQuery!}
                   data={itinerary}
                   isLoading={isGenerating}
                 />
               </div>
-            
-            
-            <div className="fixed bottom-20 right-6 z-50 w-full md:w-96">
-              
-              <Chatbot
-                isGenerating={isGenerating}
-                isMinimized={isMinimized}
-                onToggleMinimize={toggleChatMinimize}
-                onItineraryReady={(data, query) => {
-                  setItinerary(data);
-                  setTravelQuery(query);
-                  setDashboardVisible(true);
-                  setIsMinimized(true);
-                }}
-              />
-            </div>
+
+
+              <div className="fixed bottom-20 right-6 z-50 w-full md:w-96">
+
+                <Chatbot
+                  isGenerating={isGenerating}
+                  isMinimized={isMinimized}
+                  onToggleMinimize={toggleChatMinimize}
+                  onItineraryReady={(data, query) => {
+                    setItinerary(data);
+                    setTravelQuery(query);
+                    setDashboardVisible(true);
+                    setIsMinimized(true);
+                    setShowLoader(false);
+                  }}
+                  onShowLoader={setShowLoader}
+                />
+              </div>
             </>
           )}
 
 
 
         </div>
+        {showLoader && !dashboardVisible && <LoaderOverlay/>
+        }
+
       </main>
 
       <footer className="py-6 border-t bg-muted/50">

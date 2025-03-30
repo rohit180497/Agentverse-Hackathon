@@ -14,7 +14,7 @@ const SummaryCard = ({ data, isLoading }: SummaryCardProps) => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <FileText className="w-5 h-5 text-primary" />
-          Trip Summary
+          Trip Itinerary
         </CardTitle>
       </CardHeader>
       <CardContent className="overflow-y-auto max-h-[400px] whitespace-pre-wrap text-sm text-muted-foreground">

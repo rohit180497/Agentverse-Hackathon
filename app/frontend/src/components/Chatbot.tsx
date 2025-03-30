@@ -13,6 +13,8 @@ interface ChatbotProps {
   isMinimized: boolean;
   onToggleMinimize: () => void;
   onItineraryReady: (data: TripItinerary, query: TravelQuery) => void;
+  onShowLoader: (val: boolean) => void;
+
 }
 
 const extractQueryFromHistory = (data: TravelQuery): TravelQuery => {
@@ -27,7 +29,7 @@ const extractQueryFromHistory = (data: TravelQuery): TravelQuery => {
 };
 
 
-const Chatbot = ({ isGenerating, isMinimized, onToggleMinimize, onItineraryReady }: ChatbotProps) => {
+const Chatbot = ({ isGenerating, isMinimized, onToggleMinimize, onItineraryReady, onShowLoader  }: ChatbotProps) => {
   const [messages, setMessages] = useState<Message[]>([{
     id: "1",
     text: "👋 Hi! I'm TravelGenie. Tell me about your trip and I'll build your itinerary!",
@@ -63,9 +65,11 @@ const Chatbot = ({ isGenerating, isMinimized, onToggleMinimize, onItineraryReady
 
     try {
       const res = await axios.post("http://localhost:8000/chat", {
+        
         message: userMessage,
         history: chatHistory,
       });
+      
       console.log(res.data)
       const { history, trigger_core } = res.data;
       const latest = history[history.length - 1];
@@ -82,12 +86,15 @@ const Chatbot = ({ isGenerating, isMinimized, onToggleMinimize, onItineraryReady
       ]);
 
       if (trigger_core) {
+        
+        onShowLoader(true); // ✅ show loader
         const itineraryRes = await axios.post("http://localhost:8000/generate-itinerary", {
           history,
         });
 
         // ✅ Notify parent to update dashboard
         onItineraryReady(itineraryRes.data.data, extractQueryFromHistory(history));
+        onShowLoader(false); // ✅ show loader
         console.log("🧭 Final itinerary object:", itineraryRes.data);
         // ✅ Show message in chat
         setMessages((prev) => [
@@ -149,12 +156,12 @@ const Chatbot = ({ isGenerating, isMinimized, onToggleMinimize, onItineraryReady
                 <div
                   key={msg.id}
                   className={cn(
-                    "flex items-start gap-2 max-w-[80%]",
-                    msg.sender === "user" ? "ml-auto" : "mr-auto"
+                    "flex items-start gap-2",
+                    msg.sender === "user" ? "justify-end" : "justify-start"
                   )}
                 >
                   {msg.sender === "bot" && (
-                    <div className="bg-primary text-white rounded-full p-1.5">
+                    <div className="bg-primary text-white rounded-full p-2">
                       <Bot className="h-4 w-4" />
                     </div>
                   )}
@@ -169,7 +176,7 @@ const Chatbot = ({ isGenerating, isMinimized, onToggleMinimize, onItineraryReady
                     {msg.text}
                   </div>
                   {msg.sender === "user" && (
-                    <div className="bg-secondary text-secondary-foreground rounded-full p-1.5">
+                    <div className="bg-secondary text-secondary-foreground rounded-full p-2">
                       <User className="h-4 w-4" />
                     </div>
                   )}
@@ -202,7 +209,7 @@ const Chatbot = ({ isGenerating, isMinimized, onToggleMinimize, onItineraryReady
                 <Bot className="h-10 w-10 text-primary" />
               </Button>
             )}
-          </Card> // ✅ Properly close the <Card>
+          </Card> 
         );
       };
       

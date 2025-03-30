@@ -20,12 +20,12 @@ const PlacesCard = ({ data, isLoading }: PlacesCardProps) => {
 
   return (
     <Card className="shadow-md rounded-lg">
-      <CardHeader className="flex items-center justify-between">
+      <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <MapPin className="w-5 h-5 text-primary" />
           Popular Places to Explore
         </CardTitle>
-        {data && data.length > 0 && (
+        {/* {data && data.length > 0 && (
           <div className="flex gap-2">
             <button onClick={() => scroll("left")} className="hover:bg-muted p-1 rounded">
               <ChevronLeft className="h-5 w-5" />
@@ -34,7 +34,7 @@ const PlacesCard = ({ data, isLoading }: PlacesCardProps) => {
               <ChevronRight className="h-5 w-5" />
             </button>
           </div>
-        )}
+        )} */}
       </CardHeader>
 
       <CardContent className="overflow-x-auto">
