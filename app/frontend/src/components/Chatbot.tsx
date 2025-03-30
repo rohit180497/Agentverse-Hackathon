@@ -15,7 +15,7 @@ interface ChatbotProps {
   onItineraryReady: (data: TripItinerary, query: TravelQuery) => void;
 }
 
-const extractQueryFromHistory = (data:TravelQuery): TravelQuery => {
+const extractQueryFromHistory = (data: TravelQuery): TravelQuery => {
   const queryLine = history[0]?.user.toLowerCase(); // crude parsing
 
   return {
@@ -85,9 +85,9 @@ const Chatbot = ({ isGenerating, isMinimized, onToggleMinimize, onItineraryReady
         const itineraryRes = await axios.post("http://localhost:8000/generate-itinerary", {
           history,
         });
-      
+
         // ✅ Notify parent to update dashboard
-        onItineraryReady(itineraryRes.data.data, extractQueryFromHistory(history)); 
+        onItineraryReady(itineraryRes.data.data, extractQueryFromHistory(history));
         console.log("🧭 Final itinerary object:", itineraryRes.data);
         // ✅ Show message in chat
         setMessages((prev) => [
@@ -99,7 +99,7 @@ const Chatbot = ({ isGenerating, isMinimized, onToggleMinimize, onItineraryReady
             timestamp: new Date(),
           },
         ]);
-      
+
         // ✅ Auto-minimize chatbot
         //onToggleMinimize();
       }
@@ -121,9 +121,12 @@ const Chatbot = ({ isGenerating, isMinimized, onToggleMinimize, onItineraryReady
     <Card
       className={cn(
         "transition-all duration-500 overflow-hidden",
-        isMinimized ? "w-20 h-20 fixed bottom-4 right-4 rounded-full" : "w-full md:w-96 h-[500px]"
+        isMinimized
+          ? "w-20 h-20 fixed bottom-4 right-4 rounded-full"
+          : "w-full max-w-[700px] h-[500px] shadow-lg"
       )}
     >
+
       {!isMinimized ? (
         <>
           <CardHeader className="bg-travel-500 text-white p-3">
@@ -190,17 +193,18 @@ const Chatbot = ({ isGenerating, isMinimized, onToggleMinimize, onItineraryReady
             </div>
           </CardContent>
         </>
-      ) : (
-        <Button
-          variant="ghost"
-          onClick={onToggleMinimize}
-          className="w-full h-full rounded-full p-0 flex items-center justify-center"
-        >
-          <Bot className="h-10 w-10 text-primary" />
-        </Button>
-      )}
-    </Card>
-  );
-};
-
-export default Chatbot;
+            ) : (
+              <Button
+                variant="ghost"
+                onClick={onToggleMinimize}
+                className="w-full h-full rounded-full p-0 flex items-center justify-center"
+              >
+                <Bot className="h-10 w-10 text-primary" />
+              </Button>
+            )}
+          </Card> // ✅ Properly close the <Card>
+        );
+      };
+      
+      export default Chatbot;
+      

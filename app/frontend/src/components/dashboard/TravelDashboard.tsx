@@ -19,7 +19,7 @@ interface TravelDashboardProps {
 const TravelDashboard = ({ query, data, isLoading }: TravelDashboardProps) => {
   console.log(query)
   console.log(data)
-  if (!query) return null;
+  
   return (
     <div className="dashboard-container space-y-6 mx-auto max-w-6xl">
       <div className="travel-gradient text-white rounded-lg p-4 text-center">

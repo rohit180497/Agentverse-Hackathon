@@ -1,3 +1,4 @@
+// src/types/travel.ts
 
 export interface TravelQuery {
   originCity: string;
@@ -6,84 +7,78 @@ export interface TravelQuery {
   returnDate: string;
 }
 
-export interface Message {
-  id: string;
-  text: string;
-  sender: 'user' | 'bot';
-  timestamp: Date;
+export interface TripItinerary {
+  route: string;
+  weather: WeatherData;
+  flights: FlightOption[];
+  explore: ExplorePlace[];
+  food: Restaurant[];
+  events: EventData[];
+  summary: string;
+  source: string;
+  destination:string;
+  startDate: string;
+  returnDate: string;
 }
 
-export interface PopularPlace {
-  id: string;
-  name: string;
-  image: string;
-  rating: number;
-  address: string;
-  description: string;
-}
-
-export interface Restaurant {
-  id: string;
-  name: string;
-  image: string;
-  rating: number;
-  cuisine: string;
-  priceRange: string;
-  address: string;
-}
-
-export interface Event {
-  id: string;
-  name: string;
-  date: string;
-  time: string;
-  venue: string;
-  category: string;
-  description: string;
+export interface WeatherData {
+  source_weather: WeatherInfo;
+  destination_weather: WeatherInfo;
 }
 
 export interface WeatherInfo {
-  temperature: number;
+  city: string;
+  date: string;
+  temperature: string;
   condition: string;
-  icon: string;
-  forecast: {
-    date: string;
-    high: number;
-    low: number;
-    condition: string;
-    icon: string;
-  }[];
+  wind_speed: string;
+  humidity: string;
 }
 
-export interface FlightInfo {
+export interface FlightOption {
+  option: number;
+  price: string;
+  from: string;
+  to: string;
+  departure: string;
+  arrival: string;
   airline: string;
-  flightNumber: string;
-  departureTime: string;
-  arrivalTime: string;
   duration: string;
-  price: number;
 }
 
-export interface RouteInfo {
-  distance: string;
-  duration: string;
-  stops?: string[];
-  map?: string;
+export interface ExplorePlace {
+  name: string;
+  address: string;
+  rating: number;
+  total_ratings: number;
+  photo_url: string;
+  location: {
+    lat: number;
+    lng: number;
+  };
+  types: string[];
 }
 
-export interface TripSummary {
-  highlights: string[];
-  tips: string[];
-  budget: string;
-  bestTimeToVisit: string;
+export interface Restaurant {
+  name: string;
+  address: string;
+  rating: number;
+  total_ratings?: number;
+  photo_url: string;
+  types: string[];
 }
 
-export interface TripItinerary {
-  route: RouteInfo;
-  weather: WeatherInfo;
-  flights: FlightInfo[];
-  popularPlaces: PopularPlace[];
-  restaurants: Restaurant[];
-  events: Event[];
-  summary: TripSummary;
+export interface EventData {
+  name: string;
+  venue: string;
+  date: string;
+  category: string | null;
+  ticket_url: string | null;
+}
+
+export interface Message {
+  id: string;
+  text: string;
+  sender: "user" | "bot";
+  timestamp: Date;
 }
