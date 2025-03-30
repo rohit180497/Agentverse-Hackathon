@@ -1,6 +1,7 @@
 from supervisor.memory import SessionMemory
 from supervisor.extractor import extract_trip_details
 from supervisor.intent_classifier import is_travel_query 
+from datetime import datetime
 
 class SupervisorAgent:
     def __init__(self):
@@ -38,8 +39,41 @@ class SupervisorAgent:
             # self.memory.update(**{k: v for k, v in extracted.items() if v is not None})
             self.memory.update(**{k: v for k, v in extracted.items() if k in self.memory.trip_data and v is not None})
 
+            # Validation: source ≠ destination and start_date ≠ end_date
+            if self.memory.trip_data["source"] and self.memory.trip_data["destination"]:
+                if self.memory.trip_data["source"].lower() == self.memory.trip_data["destination"].lower():
+                    return {
+                        "message": "Your source and destination are the same. Please update one of them to continue planning.",
+                        "trip_details": self.memory.get_trip_details(),
+                        "ready": False
+                    }
+
+            if self.memory.trip_data["start_date"] and self.memory.trip_data["end_date"]:
+                if self.memory.trip_data["start_date"] == self.memory.trip_data["end_date"]:
+                    return {
+                        "message": "Your start and return dates are the same. Please provide a valid travel range.",
+                        "trip_details": self.memory.get_trip_details(),
+                        "ready": False
+                    }
 
             if self.memory.is_complete():
+                try:
+                    start_date = datetime.strptime(self.memory.trip_data["start_date"], "%Y-%m-%d")
+                    end_date = datetime.strptime(self.memory.trip_data["end_date"], "%Y-%m-%d")
+                    trip_duration = (end_date - start_date).days
+                    if trip_duration > 14:  #trip threshold
+                        return {
+                            "message": "Please provide valid travel dates. The trip is too long to generate itinerary.",
+                            "trip_details": self.memory.get_trip_details(),
+                            "ready": False
+                        }
+                except Exception as e:
+                    print("[⚠️ Date Parsing Error]", e)
+                    return {
+                        "message": "There was an error reading your travel dates. Please try again.",
+                        "trip_details": self.memory.get_trip_details(),
+                        "ready": False
+                    }
                 print("[🧳 All Trip Details Received]", self.memory.get_trip_details())
                 return {
                     "message": (

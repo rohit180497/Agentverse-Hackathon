@@ -18,16 +18,14 @@ def generate_preparedness_advice(source, destination, source_weather, dest_weath
     response = get_gemini_response(prompt)
     return response.strip()
 
-def generate_route_advice(source, destination, route_info):
+def generate_route_advice(route_info):
     template = load_prompt_template("prompts/route_summary_prompt.txt")
     prompt = template.render(
-        source=source,
-        destination=destination,
         summary=route_info["summary"],
-        distance=round(route_info["distance_meters"] * 0.001, 2),
-        duration=route_info["duration"],
-        fuel=route_info.get("fuel_estimate_liters", "unknown"),
-        tolls=route_info.get("toll_info", []),
+        # distance=round(route_info["distance_meters"] * 0.001, 2),
+        # duration=route_info["duration"],
+        # fuel=route_info.get("fuel_estimate_liters", "unknown"),
+        # tolls=route_info.get("toll_info", []),
         warnings=route_info.get("warnings", [])
     )
     # print("Gemini Prompt:\n", prompt)
