@@ -6,7 +6,7 @@ const developers = [
     name: "Rohit Kosamkar",
     title: "Data Scientist | AI Engineer | MLOps",
     description: "Building intelligent, scalable AI-driven systems with a focus on GenAI, pipelines, and production-ready ML.",
-    image: "/public/rohit.jpg", // Replace with actual path
+    image: "/rohit.jpg", // Replace with actual path
     github: "https://github.com/rohit180497",
     linkedin: "https://www.linkedin.com/in/rohitkosamkar",
     email: "kosamkar.r@northeastern.edu",
@@ -15,7 +15,7 @@ const developers = [
     name: "Sapna Chavan",
     title: "Web Developer | Data Analyst | Data Engineer | Data Specialist",
     description: "Crafting interactive UIs Dashboards and robust data pipelines. Passionate about analytics, frontend engineering, and automation.",
-    image: "/public/sapna.jpeg", // Replace with actual path
+    image: "/sapna.jpeg", // Replace with actual path
     github: "https://github.com/sapna-chavan",
     linkedin: "https://www.linkedin.com/in/sapna-chavan",
     email: "chavan.sap@northeastern.edu",
