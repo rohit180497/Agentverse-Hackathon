@@ -70,8 +70,10 @@ const Chatbot = ({
     ]);
     setCurrentInput("");
 
-    try {
-      const res = await axios.post("http://localhost:8000/chat", {
+    // http://localhost:8000/chat
+
+    try {       
+      const res = await axios.post("https://travelgenie-backend.onrender.com/chat", { 
         message: userMessage,
         history: chatHistory,
       });
@@ -91,10 +93,12 @@ const Chatbot = ({
         },
       ]);
 
+      // http://localhost:8000/generate-itinerary
+
       if (trigger_core) {
         onShowLoader(true); // ✅ show loader
         const itineraryRes = await axios.post(
-          "http://localhost:8000/generate-itinerary",
+          "https://travelgenie-backend.onrender.com/generate-itinerary",
           {
             history,
           }
