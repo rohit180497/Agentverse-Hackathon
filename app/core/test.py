@@ -36,8 +36,8 @@ if __name__ == "__main__":
     # core.run_weather_preparedness()
 
     print("\n================ ROUTE SUMMARY =================")
-    # core.run_route_summary()
-
+    route_summary = core.run_route_summary()
+    print(route_summary)
     print("\n================ PLACES EXPLORATION SUMMARY =================")
     # places= core.run_exploration_guide()
     # print(places)
@@ -46,8 +46,8 @@ if __name__ == "__main__":
     # core.run_flight_search()
 
     print("\n================ FLIGHT SEARCH SUMMARY =================")
-    flight_result = core.run_flight_search()
-    print(flight_result)
+    # flight_result = core.run_flight_search()
+    # print(flight_result)
 
     print("\n================ FOOD EXPLORATION SUMMARY =================")
     # food =core.run_food_exploration()

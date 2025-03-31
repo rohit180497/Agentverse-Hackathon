@@ -52,13 +52,16 @@ class AmadeusFlightSearch:
 
         res = requests.get(url, headers=headers, params=params)
         if res.status_code == 429:
-            raise Exception("Rate limited: Too many location requests. Try again later.")
+            print("Rate limited: Too many location requests. Try again later.")
+            return ""
         res.raise_for_status()
         data = res.json()
 
         if not data.get("data"):
-            raise ValueError(f"No IATA code found for city: '{city_name}'")
-
+            # raise ValueError(f"No IATA code found for city: '{city_name}'")
+            print(f"No IATA code found for city: '{city_name}'")
+            iata_code = ""
+            return iata_code
         iata_code = data["data"][0]["iataCode"]
         self.iata_cache[city_key] = iata_code
         return iata_code
@@ -75,6 +78,10 @@ class AmadeusFlightSearch:
         origin = self.get_iata_code(origin_city)
         destination = self.get_iata_code(destination_city)
         print("origin, destination",origin, destination)
+        raw_data = []
+        if origin == "" or destination == "":
+            print("Invalid IATA code for origin or destination.")
+            return raw_data
         url = "https://test.api.amadeus.com/v2/shopping/flight-offers"
         headers = {"Authorization": f"Bearer {self.access_token}"}
         params = {
@@ -93,7 +100,7 @@ class AmadeusFlightSearch:
             raise Exception("❌ Rate limited: Too many flight searches. Try again later.")
         response.raise_for_status()
 
-        raw_data = []
+        
         for i, offer in enumerate(response.json().get("data", []), start=1):
             price = f"{offer['price']['total']} {offer['price']['currency']}"
             for itinerary in offer["itineraries"]:

@@ -7,15 +7,15 @@ import { Message, TripItinerary, TravelQuery } from "@/types/travel";
 import { cn } from "@/lib/utils";
 import axios from "axios";
 
-
 interface ChatbotProps {
   isGenerating: boolean;
   isMinimized: boolean;
   onToggleMinimize: () => void;
   onItineraryReady: (data: TripItinerary, query: TravelQuery) => void;
+  onShowLoader: (val: boolean) => void;
 }
 
-const extractQueryFromHistory = (data:TravelQuery): TravelQuery => {
+const extractQueryFromHistory = (data: TravelQuery): TravelQuery => {
   const queryLine = history[0]?.user.toLowerCase(); // crude parsing
 
   return {
@@ -26,16 +26,25 @@ const extractQueryFromHistory = (data:TravelQuery): TravelQuery => {
   };
 };
 
-
-const Chatbot = ({ isGenerating, isMinimized, onToggleMinimize, onItineraryReady }: ChatbotProps) => {
-  const [messages, setMessages] = useState<Message[]>([{
-    id: "1",
-    text: "👋 Hi! I'm TravelGenie. Tell me about your trip and I'll build your itinerary!",
-    sender: "bot",
-    timestamp: new Date(),
-  }]);
+const Chatbot = ({
+  isGenerating,
+  isMinimized,
+  onToggleMinimize,
+  onItineraryReady,
+  onShowLoader,
+}: ChatbotProps) => {
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: "1",
+      text: "👋 Hi! I'm TravelGenie. Tell me about your trip and I'll build your itinerary!",
+      sender: "bot",
+      timestamp: new Date(),
+    },
+  ]);
   const [currentInput, setCurrentInput] = useState("");
-  const [chatHistory, setChatHistory] = useState<{ user: string; bot: string }[]>([]);
+  const [chatHistory, setChatHistory] = useState<
+    { user: string; bot: string }[]
+  >([]);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -66,7 +75,8 @@ const Chatbot = ({ isGenerating, isMinimized, onToggleMinimize, onItineraryReady
         message: userMessage,
         history: chatHistory,
       });
-      console.log(res.data)
+
+      console.log(res.data);
       const { history, trigger_core } = res.data;
       const latest = history[history.length - 1];
 
@@ -82,12 +92,20 @@ const Chatbot = ({ isGenerating, isMinimized, onToggleMinimize, onItineraryReady
       ]);
 
       if (trigger_core) {
-        const itineraryRes = await axios.post("http://localhost:8000/generate-itinerary", {
-          history,
-        });
-      
+        onShowLoader(true); // ✅ show loader
+        const itineraryRes = await axios.post(
+          "http://localhost:8000/generate-itinerary",
+          {
+            history,
+          }
+        );
+
         // ✅ Notify parent to update dashboard
-        onItineraryReady(itineraryRes.data.data, extractQueryFromHistory(history)); 
+        onItineraryReady(
+          itineraryRes.data.data,
+          extractQueryFromHistory(history)
+        );
+        onShowLoader(false); // ✅ show loader
         console.log("🧭 Final itinerary object:", itineraryRes.data);
         // ✅ Show message in chat
         setMessages((prev) => [
@@ -99,7 +117,7 @@ const Chatbot = ({ isGenerating, isMinimized, onToggleMinimize, onItineraryReady
             timestamp: new Date(),
           },
         ]);
-      
+
         // ✅ Auto-minimize chatbot
         //onToggleMinimize();
       }
@@ -121,14 +139,20 @@ const Chatbot = ({ isGenerating, isMinimized, onToggleMinimize, onItineraryReady
     <Card
       className={cn(
         "transition-all duration-500 overflow-hidden",
-        isMinimized ? "w-20 h-20 fixed bottom-4 right-4 rounded-full" : "w-full md:w-96 h-[500px]"
+        isMinimized
+          ? "w-28 h-28 fixed bottom-10 right-10 rounded-full"
+          : "shadow-lg"
       )}
     >
       {!isMinimized ? (
         <>
-          <CardHeader className="bg-travel-500 text-white p-3">
+          <CardHeader className="bg-gradient-to-r from-[#0077b6] via-[#00b4d8] to-[#90e0ef] text-white p-3">
             <CardTitle className="flex items-center gap-2 text-lg">
-              <Bot className="w-5 h-5" />
+              {/* <img
+                src="/lamp.png"
+                alt="Genie"
+                className="w-12 h-12 rounded-full object-contain"
+              /> */}
               TravelGenie Assistant
               <Button
                 variant="ghost"
@@ -146,13 +170,17 @@ const Chatbot = ({ isGenerating, isMinimized, onToggleMinimize, onItineraryReady
                 <div
                   key={msg.id}
                   className={cn(
-                    "flex items-start gap-2 max-w-[80%]",
-                    msg.sender === "user" ? "ml-auto" : "mr-auto"
+                    "flex items-start gap-2",
+                    msg.sender === "user" ? "justify-end" : "justify-start"
                   )}
                 >
                   {msg.sender === "bot" && (
-                    <div className="bg-primary text-white rounded-full p-1.5">
-                      <Bot className="h-4 w-4" />
+                    <div className="rounded-full overflow-hidden">
+                      <img
+                        src="/genie.png"
+                        alt="Genie"
+                        className="object-contain w-12 h-12"
+                      />
                     </div>
                   )}
                   <div
@@ -166,7 +194,7 @@ const Chatbot = ({ isGenerating, isMinimized, onToggleMinimize, onItineraryReady
                     {msg.text}
                   </div>
                   {msg.sender === "user" && (
-                    <div className="bg-secondary text-secondary-foreground rounded-full p-1.5">
+                    <div className="bg-secondary text-secondary-foreground rounded-full p-2">
                       <User className="h-4 w-4" />
                     </div>
                   )}
@@ -183,7 +211,11 @@ const Chatbot = ({ isGenerating, isMinimized, onToggleMinimize, onItineraryReady
                   onKeyDown={(e) => e.key === "Enter" && handleSend()}
                   disabled={isGenerating}
                 />
-                <Button size="icon" onClick={handleSend} disabled={isGenerating}>
+                <Button
+                  size="icon"
+                  onClick={handleSend}
+                  disabled={isGenerating}
+                >
                   <Send className="h-4 w-4" />
                 </Button>
               </div>
@@ -196,7 +228,11 @@ const Chatbot = ({ isGenerating, isMinimized, onToggleMinimize, onItineraryReady
           onClick={onToggleMinimize}
           className="w-full h-full rounded-full p-0 flex items-center justify-center"
         >
-          <Bot className="h-10 w-10 text-primary" />
+          <img
+            src="/lamp.png" // 👈 Use /public/genie.gif or update the path
+            alt="Open TravelGenie"
+            className="w-24 h-24 object-contain"
+          />
         </Button>
       )}
     </Card>

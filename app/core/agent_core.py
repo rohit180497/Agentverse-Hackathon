@@ -77,13 +77,14 @@ class TravelGenieCore:
         print("Getting route details...")
 
         route_data = self.route_agent.get_route(self.source, self.destination)
-
+        print(route_data)
         if "error" in route_data:
             print("Error getting route:", route_data["error"])
             return {"error": route_data["error"]}
-
-        print("Route Summary:", route_data["summary"])
-        return route_data["summary"]
+        summary = generate_route_advice(route_data)
+        # print("Route Summary:", route_data["summary"])
+        # return route_data["summary"]
+        return summary
 
     def run_exploration_guide(self):
         print(f"Exploring top attractions in {self.destination}...")
@@ -120,7 +121,7 @@ class TravelGenieCore:
 
     def run_event_explorer(self):
         print("Fetching upcoming events in destination city...")
-        event_data = self.event_agent.get_events(self.destination, self.start_date)
+        event_data = self.event_agent.get_events(self.destination, self.start_date, self.end_date)
         # print(event_data)
         if "error" in event_data:
             print("Event agent error:", event_data["error"])
@@ -140,8 +141,9 @@ class TravelGenieCore:
             )
 
             if not flight_data:
-                print("No flights found.")
-                return {"error": "No flight data available."}
+                
+                print("No flights found.", flight_data)
+                return flight_data
 
             # print("\n Top Flight Options:")
             # for row in flight_data:

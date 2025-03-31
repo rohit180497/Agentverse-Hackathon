@@ -20,8 +20,8 @@ const FlightsCard = ({ data, isLoading }: FlightsCardProps) => {
 
   return (
     <Card className="h-full">
-      <CardHeader className="pb-2">
-        <CardTitle className="text-lg flex items-center gap-2">✈️ Flight Options</CardTitle>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">✈️ Flight Options</CardTitle>
       </CardHeader>
       <CardContent>
         {isLoading ? (

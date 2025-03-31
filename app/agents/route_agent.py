@@ -59,6 +59,20 @@ class RouteAgent:
             response = requests.post(url, json=body, headers=headers)
             response.raise_for_status()
             data = response.json()
+            print("Route dataaaaaaaaaaaaaaaaaaaaaaa:", data)
+            if not data.get("routes"):
+                result_model = RouteResponse(
+                    source="",
+                    destination="",
+                    distance_meters=0,
+                    duration="",
+                    fuel_estimate_liters=None,
+                    toll_info=[],
+                    route_labels=[],
+                    warnings=["Unable to fetch route."],
+                    summary=""
+                )
+                return result_model.model_dump()
             route = data["routes"][0]
 
             duration = route.get("duration")
@@ -90,7 +104,18 @@ class RouteAgent:
             return result_model.model_dump()
 
         except Exception as e:
-            return {"error": str(e)}
+            result_model = RouteResponse(
+                    source="",
+                    destination="",
+                    distance_meters=0,
+                    duration="",
+                    fuel_estimate_liters=None,
+                    toll_info=[],
+                    route_labels=[],
+                    warnings=["Exception:"& str(e)],
+                    summary=""
+                )
+            return result_model.model_dump()
 
 # Example :
 # agent = RouteAgent(api_key="AIzaSy...")

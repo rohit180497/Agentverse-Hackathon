@@ -46,10 +46,12 @@ def chat_fn(message, history):
             last_trip_details = trip
             trip_msg = result.get("message", "✅ All trip details received!") + "\n\nPlease type \"Yes\" to confirm and start planning your itinerary."
             print("[Awaiting User Confirmation to Trigger TravelGenieCore...]")
+            print(trip)
             return {
                 "history": history + [(message, trip_msg)],
                 "trigger_core": False
             }
+            
 
         return {
             "history": history + [(message, result.get("message", "⚠️ No response message returned."))],
