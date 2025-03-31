@@ -5,8 +5,8 @@ const developers = [
   {
     name: "Rohit Kosamkar",
     title: "Data Scientist | AI Engineer | MLOps",
-    description: "Building intelligent, scalable AI-driven systems with a focus on GenAI, pipelines, and production-ready ML.",
-    image: "/rohit.jpg", // Replace with actual path
+    description: "Building intelligent, scalable AI-driven systems with a strong focus on Generative AI, Deep Learning, and MLOps. Passionate Data Science professional with expertise in deploying production-ready machine learning pipelines and delivering real-world business impact.",
+    image: "/rohit.jpg", 
     github: "https://github.com/rohit180497",
     linkedin: "https://www.linkedin.com/in/rohitkosamkar",
     email: "kosamkar.r@northeastern.edu",
@@ -14,8 +14,8 @@ const developers = [
   {
     name: "Sapna Chavan",
     title: "Web Developer | Data Analyst | Data Engineer | Data Specialist",
-    description: "Crafting interactive UIs Dashboards and robust data pipelines. Passionate about analytics, frontend engineering, and automation.",
-    image: "/sapna.jpeg", // Replace with actual path
+    description: "Crafting seamless full-stack applications and insightful dashboards. Passionate about data engineering, MLOps, and automation workflows. Experienced in SQL, Power BI, and modern frontend technologies.",
+    image: "/sapna.jpeg", 
     github: "https://github.com/sapna-chavan",
     linkedin: "https://www.linkedin.com/in/sapna-chavan",
     email: "chavan.sap@northeastern.edu",
@@ -45,8 +45,8 @@ const Contact = () => {
                   alt={dev.name}
                   className="w-28 h-28 rounded-full object-cover mb-4"
                 />
-                <h2 className="text-xl font-semibold">{dev.name}</h2>
-                <p className="text-sm text-gray-500 mb-2">{dev.title}</p>
+                <h2 className="text-2xl font-semibold mb-1">{dev.name}</h2>
+                <p className="text-sm font-semibold">{dev.title}</p>
                 <p className="text-sm text-muted-foreground mb-3">{dev.description}</p>
                 <p className="text-sm text-blue-600 mb-3">
                   <a href={`mailto:${dev.email}`} className="hover:underline">

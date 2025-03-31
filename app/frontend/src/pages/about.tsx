@@ -73,11 +73,11 @@ const About = () => {
             <h3 className="text-xl font-semibold mb-2 text-travel-primary">
               System Architecture
             </h3>
-            <div className="rounded-lg overflow-hidden border border-gray-200 shadow-sm">
+            <div className="rounded-lg overflow-hidden border border-gray-200 shadow-sm flex justify-center">
               <img
                 src="/TravelGenie_Architecture.gif"
                 alt="TravelGenie Architecture"
-                className="w-full object-contain"
+                className="max-w-xl w-full h-auto object-contain"
               />
             </div>
           </div>
