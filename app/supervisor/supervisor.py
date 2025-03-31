@@ -9,7 +9,7 @@ class SupervisorAgent:
 
     def chat(self, user_input: str, chat_history: None):
         chat_history = chat_history or []
-
+        
         is_travel_check = is_travel_query(user_input, chat_history)
         print("Check: ", is_travel_check)
         try:
@@ -78,7 +78,7 @@ class SupervisorAgent:
                 return {
                     "message": (
                         f"All trip details received!\n\n"
-                        f"From **{self.memory.trip_data['source']}** to **{self.memory.trip_data['destination']}**\n"
+                        f"From {self.memory.trip_data['source'].upper()} to {self.memory.trip_data['destination'].upper()}\n"
                         f"Travel Dates: {self.memory.trip_data['start_date']} to {self.memory.trip_data['end_date']}\n\n"
                     ),
                     "trip_details": self.memory.get_trip_details(),

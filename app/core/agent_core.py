@@ -141,8 +141,9 @@ class TravelGenieCore:
             )
 
             if not flight_data:
-                print("No flights found.")
-                return {"error": "No flight data available."}
+                
+                print("No flights found.", flight_data)
+                return flight_data
 
             # print("\n Top Flight Options:")
             # for row in flight_data:

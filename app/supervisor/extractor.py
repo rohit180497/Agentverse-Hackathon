@@ -29,7 +29,6 @@ def extract_trip_details(user_message: str) -> dict:
 
         response = parser.invoke(llm.invoke(rendered_prompt)).strip()
 
-        # Remove markdown code block wrappers if present
         if response.startswith("```"):
             response = re.sub(r"```(json)?", "", response).strip()
             response = response.replace("```", "").strip()

@@ -22,7 +22,7 @@ jinja_template = load_prompt_template("prompts/intent_prompt.txt")
 
 def is_travel_query(message: str, chat_history) -> bool:
     try:
-        formatted_history = chat_history[-5:]  # only last 5 messages for brevity
+        formatted_history = chat_history 
         intent_prompt = jinja_template.render(user_message=message, chat_history=formatted_history)
         response = parser.invoke(llm.invoke(intent_prompt)).strip()
         # response = intent_chain.invoke({"query": message}).strip().upper()

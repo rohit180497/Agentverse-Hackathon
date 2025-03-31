@@ -20,7 +20,7 @@ const Header = () => {
           <img
             src="/logoBG.png"
             alt="Travel Genie Logo"
-            className="h-16 w-16 rounded-full shadow-sm"
+            className="h-20 w-20 rounded-full shadow-sm"
           />
         </div>
 

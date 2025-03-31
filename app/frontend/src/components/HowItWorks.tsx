@@ -25,7 +25,7 @@ const HowItWorks = () => {
           <div className="bg-[#0FA0CE] rounded-full p-2 text-white mb-2">
             <Map size={18} />
           </div>
-          <p className="text-sm">Get itinerary</p>
+          <p className="text-sm">Get complete itinerary</p>
         </div>
       </div>
     </div>

@@ -44,11 +44,14 @@ class EventAgent:
             response = requests.get(url, params=params)
             response.raise_for_status()
             data = response.json()
+            # print("eventssssssssssssssss",data)
+            events = []
 
             if "_embedded" not in data or "events" not in data["_embedded"]:
-                return {"error": f"No events found for {location}"}
+                print("error:No events found for",location)
+                return EventResponse(location=location, events=events).model_dump(mode="json")
 
-            events = []
+            
             for e in data["_embedded"]["events"]:
                 name = e.get("name")
                 venue = e["_embedded"]["venues"][0].get("name", "Unknown Venue")
