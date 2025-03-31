@@ -15,7 +15,7 @@ load_dotenv()
 app = FastAPI(title="TravelGenie API", description="Multi-Agent Travel Planner", version="1.0")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Or replace with ["http://localhost:8080"]
+    allow_origins=["*"],  # we can replace with ["http://localhost:8080"]
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

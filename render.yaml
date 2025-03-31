@@ -1,0 +1,31 @@
+services:
+  - type: web
+    name: travelgenie-backend
+    env: python
+    region: oregon
+    plan: free
+    branch: main
+    runtime: python
+    buildCommand: ""
+    startCommand: uvicorn app.fastapi_app:app --host 0.0.0.0 --port 10000
+    envVars:
+      - key: GOOGLE_MAPS_API_KEY
+        value: YOUR_GOOGLE_MAPS_API_KEY
+      - key: GOOGLE_GEOCODING_API_KEY
+        value: YOUR_GOOGLE_GEOCODING_API_KEY
+      - key: OPEN_WEATHER_API_KEY
+        value: YOUR_OPEN_WEATHER_API_KEY
+      - key: RAPID_API_KEY
+        value: YOUR_RAPID_API_KEY
+      - key: GOOGLE_PLACES_API_KEY
+        value: YOUR_GOOGLE_PLACES_API_KEY
+      - key: GOOGLE_API_KEY
+        value: YOUR_GOOGLE_API_KEY
+      - key: GEMINI_API_KEY
+        value: YOUR_GEMINI_API_KEY
+      - key: TICKETMASTER_API_KEY
+        value: YOUR_TICKETMASTER_API_KEY
+      - key: AMADEUS_API_KEY
+        value: YOUR_AMADEUS_API_KEY
+      - key: AMADEUS_SECRET_KEY
+        value: YOUR_AMADEUS_SECRET_KEY
