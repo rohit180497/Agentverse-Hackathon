@@ -2,7 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
-*.json
+
 agents/*.json
 # C extensions
 *.so
@@ -28,7 +28,7 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
-*.json
+
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
