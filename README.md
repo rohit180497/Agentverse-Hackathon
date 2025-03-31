@@ -1,3 +1,7 @@
+![AI](https://img.shields.io/badge/AI-Powered-brightgreen?style=for-the-badge&logo=OpenAI&logoColor=white) ![LLM](https://img.shields.io/badge/LLM-Gemini-blue?style=for-the-badge&logo=google&logoColor=white)
+ ![LangChain](https://img.shields.io/badge/LangChain-Integrated-orange?style=for-the-badge&logo=python&logoColor=white) ![TravelTech](https://img.shields.io/badge/TravelGenie-Agent-blueviolet?style=for-the-badge&logo=earth&logoColor=white) ![FastAPI](https://img.shields.io/badge/FastAPI-Backend-009688?style=for-the-badge&logo=fastapi&logoColor=white) ![React](https://img.shields.io/badge/React-Frontend-61DAFB?style=for-the-badge&logo=react&logoColor=black) ![Multi-Agent](https://img.shields.io/badge/Multi--Agent-System-critical?style=for-the-badge&logo=apacheairflow&logoColor=white) ![Deployed](https://img.shields.io/badge/Deployed-Render%20%26%20Vercel-success?style=for-the-badge&logo=vercel&logoColor=white)
+
+
 # TravelGenie (AI-Powered Travel Itinerary Planner)
 
 TravelGenie is a full-stack AI-powered travel assistant that helps users effortlessly plan end-to-end trips through a conversational interface. Built with FastAPI (backend) and TypeScript + Tailwind (frontend), it uses multi-agent orchestration to deliver intelligent travel suggestions.
