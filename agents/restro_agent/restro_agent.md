@@ -177,7 +177,7 @@ if __name__ == "__main__":
 
 ## 🔗 Source Code
 
-[GitHub Repository](https://github.com/rohit180497/Agentverse-Hackathon/tree/main/agents/food_explorer)
+[GitHub Repository](https://github.com/rohit180497/Agentverse-Hackathon/tree/main/agents/restro_agent)
 
 ---
 

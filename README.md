@@ -23,6 +23,14 @@ TravelGenie is a full-stack AI-powered travel assistant that helps users effortl
 
 ---
 
+## Agentverse Registered Agents
+- [Google API Route Agent](https://agentverse.ai/agents/details/agent1qfetzztsmf373m7qa4x6l5mjveykecm87cu9m7myaxd7ukp0rwrjkkax9wt/editor)
+- [Weather Agent](https://agentverse.ai/agents/details/agent1q2zc0ctnxwyzd7xxgafwzwcd7tkzg7w790zjret9vwm2f38gmm5dv7wm22j/profile)
+- [Google Places Explorer Agent](https://agentverse.ai/agents/details/agent1q0vj2jq0xe05zdukwnesaqvey0sve99gahvfp452yrlemtng8axzvcf8hq0/profile)
+- [Flight Search Agent](https://agentverse.ai/agents/details/agent1qd3qj9wsjwdasgqu2w3gzwjgzc3cjx7pwdl26th3r67y46umgulwxu4emrg/profile)
+- [Restaurant Explorer Agent](https://agentverse.ai/agents/details/agent1qtcaxwkqgs0kgfmtsr90j9lcpjk3a7t3mtkf9sty8a07gdr0el6sjgkzy60/profile)
+- [Event Explorer Agent](https://agentverse.ai/agents/details/agent1qvmkshe4kn3ucfsecd9d703jqzqy858z5l2unn9qye3y6dyvc5ph20zmqch/profile)
+
 ## Folder Structure (Simplified)
 ```
 rohit180497-agentverse-hackathon/
