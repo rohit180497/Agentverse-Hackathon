@@ -13,6 +13,12 @@ interface ChatbotProps {
   onToggleMinimize: () => void;
   onItineraryReady: (data: TripItinerary, query: TravelQuery) => void;
   onShowLoader: (val: boolean) => void;
+  messages: Message[];
+  setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
+  currentInput: string;
+  setCurrentInput: React.Dispatch<React.SetStateAction<string>>;
+  chatHistory: { user: string; bot: string }[];
+  setChatHistory: React.Dispatch<React.SetStateAction<{ user: string; bot: string }[]>>;
 }
 
 const extractQueryFromHistory = (data: TravelQuery): TravelQuery => {
@@ -32,19 +38,23 @@ const Chatbot = ({
   onToggleMinimize,
   onItineraryReady,
   onShowLoader,
+  messages,
+  setMessages,
+  currentInput,
+  setCurrentInput,
+  chatHistory,
+  setChatHistory,
 }: ChatbotProps) => {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "1",
-      text: "👋 Hi! I'm TravelGenie. Tell me about your trip and I'll build your itinerary!",
-      sender: "bot",
-      timestamp: new Date(),
-    },
-  ]);
-  const [currentInput, setCurrentInput] = useState("");
-  const [chatHistory, setChatHistory] = useState<
-    { user: string; bot: string }[]
-  >([]);
+  // const [messages, setMessages] = useState<Message[]>([
+  //   {
+  //     id: "1",
+  //     text: "👋 Hi! I'm TravelGenie. Tell me about your trip and I'll build your itinerary!",
+  //     sender: "bot",
+  //     timestamp: new Date(),
+  //   },
+  // ]);
+  // const [currentInput, setCurrentInput] = useState("");
+  // const [chatHistory, setChatHistory] = useState<{ user: string; bot: string }[]>([]);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -78,7 +88,7 @@ const Chatbot = ({
         history: chatHistory,
       });
 
-      console.log(res.data);
+      //console.log(res.data);
       const { history, trigger_core } = res.data;
       const latest = history[history.length - 1];
 
@@ -110,7 +120,7 @@ const Chatbot = ({
           extractQueryFromHistory(history)
         );
         onShowLoader(false); // ✅ show loader
-        console.log("🧭 Final itinerary object:", itineraryRes.data);
+        //console.log("🧭 Final itinerary object:", itineraryRes.data);
         // ✅ Show message in chat
         setMessages((prev) => [
           ...prev,
@@ -131,7 +141,7 @@ const Chatbot = ({
         ...prev,
         {
           id: Date.now().toString(),
-          text: "🚨 Oops! Something went wrong.",
+          text: "🚨 Oops! Something went wrong. Please try again.",
           sender: "bot",
           timestamp: new Date(),
         },

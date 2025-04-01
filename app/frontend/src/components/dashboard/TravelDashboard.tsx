@@ -17,8 +17,8 @@ interface TravelDashboardProps {
 }
 
 const TravelDashboard = ({ query, data, isLoading }: TravelDashboardProps) => {
-  console.log(query)
-  console.log(data)
+  //console.log(query)
+  //console.log(data)
   if (!data) return null;
   return (
     <div className="dashboard-container space-y-6 mx-auto max-w-6xl">
