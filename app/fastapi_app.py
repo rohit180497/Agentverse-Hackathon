@@ -79,8 +79,7 @@ def chat_endpoint(req: ChatRequest):
             last_trip_details = result["trip_details"]
             trip_msg = result.get("message", "✅ All trip details received!") + "\n\nPlease type \"Yes\" to confirm and start planning your itinerary."
             history.append(HistoryItem(user=message, bot=trip_msg))
-            print("111111111111111111111111111111111111")
-            print(last_trip_details)
+            
             return ChatResponse(history=history, trigger_core=False)
 
         response_msg = result.get("message", "⚠️ No response message returned.")
@@ -96,8 +95,7 @@ def chat_endpoint(req: ChatRequest):
 def generate_itinerary(req: ItineraryRequest):
     global last_trip_details
     chat_history: List[HistoryItem] = req.history
-    print("2222222222222222222222222")
-    print(last_trip_details)
+    
     if not last_trip_details:
         chat_history.append(HistoryItem(user="", bot="No trip details found. Please provide your trip info."))
         return ItineraryResponse(history=chat_history, data=None)

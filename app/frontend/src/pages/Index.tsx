@@ -2,7 +2,7 @@ import { useState } from "react";
 import Header from "@/components/Header";
 import Chatbot from "@/components/Chatbot";
 import TravelDashboard from "@/components/dashboard/TravelDashboard";
-import { TravelQuery, TripItinerary } from "@/types/travel";
+import { Message, TravelQuery, TripItinerary } from "@/types/travel";
 import { TravelService } from "@/services/TravelService";
 import { toast } from "@/components/ui/use-toast";
 import HowItWorks from "@/components/HowItWorks";
@@ -32,6 +32,22 @@ const Index = () => {
   const [dashboardVisible, setDashboardVisible] = useState(false);
   const [showLoader, setShowLoader] = useState(false);
 
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: "1",
+      text: "👋 Hi! I'm TravelGenie. Tell me about your trip and I'll build your itinerary!",
+      sender: "bot",
+      timestamp: new Date(),
+    },
+  ]);
+  
+  const [chatHistory, setChatHistory] = useState<
+    { user: string; bot: string }[]
+  >([]);
+  
+  const [currentInput, setCurrentInput] = useState("");
+
+
   const handleSubmitQuery = async (query: TravelQuery) => {
     setTravelQuery(query);
     setIsGenerating(true);
@@ -52,7 +68,7 @@ const Index = () => {
 
       toast({
         title: "Itinerary Ready",
-        description: "Your personalized travel plan has been generated!",
+        description: "Your travel plan has been generated!",
       });
     } catch (error) {
       console.error("Error generating itinerary:", error);
@@ -107,6 +123,12 @@ const Index = () => {
                       setDashboardVisible(true);
                       setIsMinimized(true);
                     }}
+                    messages={messages}
+                    setMessages={setMessages}
+                    currentInput={currentInput}
+                    setCurrentInput={setCurrentInput}
+                    chatHistory={chatHistory}
+                    setChatHistory={setChatHistory}
                   />
                 </div>
               </div>
@@ -135,6 +157,12 @@ const Index = () => {
                     setShowLoader(false);
                   }}
                   onShowLoader={setShowLoader}
+                  messages={messages}
+                  setMessages={setMessages}
+                  currentInput={currentInput}
+                  setCurrentInput={setCurrentInput}
+                  chatHistory={chatHistory}
+                  setChatHistory={setChatHistory}
                 />
               </div>
             </>

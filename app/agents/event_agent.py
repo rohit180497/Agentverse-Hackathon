@@ -44,7 +44,7 @@ class EventAgent:
             response = requests.get(url, params=params)
             response.raise_for_status()
             data = response.json()
-            # print("eventssssssssssssssss",data)
+            
             events = []
 
             if "_embedded" not in data or "events" not in data["_embedded"]:
