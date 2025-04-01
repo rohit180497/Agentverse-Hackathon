@@ -26,8 +26,8 @@ const About = () => {
             </h2>
             <p className="text-muted-foreground text-md leading-relaxed">
               This project was proudly built for the{" "}
-              <strong>Global AI-Agent League Hackathon 2025</strong> hosted by{" "}
-              <em>AgentVerse</em>, where developers crafted collaborative
+              <strong>Global AI-Agent League Hackathon 2025</strong> hosted by Agentverse by{" "}
+              <em>Fetch.ai</em>, where developers crafted collaborative
               autonomous agents to solve real-world problems using LLMs and tool
               integration.
             </p>
