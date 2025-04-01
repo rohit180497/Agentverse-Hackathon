@@ -70,7 +70,7 @@ weather_agent.include(weather_protocol)
 
 @weather_agent.on_event("startup")
 async def announce(ctx: Context):
-    ctx.logger.info(f"✅ WeatherAgent is live at address: {ctx.agent.address}")
+    ctx.logger.info(f"WeatherAgent is live at address: {ctx.agent.address}")
 
 if __name__ == "__main__":
     weather_agent.run()
