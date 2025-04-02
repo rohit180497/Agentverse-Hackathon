@@ -14,7 +14,7 @@ const About = () => {
           </h1>
           <p className="text-muted-foreground text-lg leading-relaxed">
             <strong>TravelGenie</strong> is your intelligent AI-powered travel
-            companion that builds personalized itineraries for your adventures.
+            companion that builds itineraries for your adventures.
             Whether you're a solo traveler or planning a group trip, TravelGenie
             simplifies your journey planning with smart suggestions on routes,
             flights, weather prep, food places, and events.
@@ -33,7 +33,7 @@ const About = () => {
             </p>
             <ul className="list-disc list-inside mt-3 text-muted-foreground">
               <li>Multi-agent architecture powered by FastAPI</li>
-              <li>Frontend built using React + Shadcn UI + Tailwind</li>
+              <li>Frontend built using React + Tailwind</li>
               <li>
                 Agents built for Route, Weather, Flights, Events, and Food
                 discovery

@@ -105,7 +105,7 @@ const Index = () => {
           {!dashboardVisible ? (
             <>
               {/* How It Works centered */}
-              <div className="w-full max-w-[700px]  mb-6">
+              <div className="w-full max-w-[900px]  mb-6">
                 <HowItWorks />
               </div>
 
